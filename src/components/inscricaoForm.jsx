@@ -25,7 +25,11 @@ export default function InscricaoForm() {
     try {
       // Se estiver testando local use 'http://localhost:8080/inscricoes'
       // Quando subir pro Render, substitua pelo seu link de produção do Render
-      await axios.post('http://localhost:8080/inscricoes', formData);
+    //  await axios.post('http://localhost:8080/inscricoes', formData);
+      await axios.post('https://produtos-api-lagc.onrender.com/inscricoes', formData);
+      
+
+
       
       setStatus({ 
         loading: false, 

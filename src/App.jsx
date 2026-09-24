@@ -306,7 +306,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* VITRINE DE PRODUTOS */}
+{/* VITRINE DE PRODUTOS */}
       <main className="max-w-7xl mx-auto py-12 px-4">
         <div className="flex justify-between items-center mb-8">
           <h3 className="text-2xl font-serif text-rose-200 border-l-4 border-rose-500 pl-3">
@@ -332,7 +332,7 @@ export default function App() {
                 <div key={prodId} className="bg-neutral-900 border border-neutral-800 rounded-lg overflow-hidden group hover:border-rose-500/50 transition">
                   <div className="h-64 bg-neutral-800 flex items-center justify-center text-neutral-500 group-hover:bg-neutral-700/50 transition">
                     {prodImg ? (
-                      <img src={prodImg} alt={prodNome} className="w-full h-full object-cover" />
+                      <img src={prodImg} alt={prodNome} className="w-full h-full object-contain" />
                     ) : (
                       <span className="text-xs text-neutral-500">[ Foto do Produto ]</span>
                     )}
@@ -354,6 +354,7 @@ export default function App() {
         )}
       </main>
 
+      
       {/* LOOKS PARA INSPIRAR */}
       <section className="bg-black py-16 px-4 border-t border-neutral-800">
         <div className="max-w-7xl mx-auto">
