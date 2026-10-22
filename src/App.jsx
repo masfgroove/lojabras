@@ -112,15 +112,75 @@ export default function App() {
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100 font-sans relative">
       
-      {/* BOTÃO FLUTUANTE DE ACESSO AO PAINEL ADMIN */}
-      <button 
-        onClick={() => setMostrarModalAdmin(true)}
-        className="fixed bottom-6 right-6 z-50 bg-rose-600 hover:bg-rose-700 text-white p-4 rounded-full shadow-2xl flex items-center gap-2 transition cursor-pointer border border-rose-400/30"
-        title="Painel Administrativo - Cadastrar Produto"
-      >
-        <PlusCircle className="w-6 h-6" />
-        <span className="text-xs font-semibold uppercase tracking-wider hidden md:inline">Novo Produto</span>
-      </button>
+      {/* 1. HEADER FIXO TRADICIONAL (LOGO À ESQUERDA, NAV NO MEIO, AÇÕES À DIREITA) */}
+      <header className="sticky top-0 z-50 bg-black/95 backdrop-blur-md border-b border-neutral-800 px-4 lg:px-8 py-3">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+          
+          {/* LOGO À ESQUERDA */}
+          <div className="flex items-center gap-3 shrink-0">
+            <a href="#" className="flex items-center gap-2">
+              <img 
+                src="/logo.png" 
+                alt="Vitrine Delas Logo" 
+                className="h-10 md:h-12 w-auto object-contain"
+              />
+            </a>
+          </div>
+
+          {/* NAVBAR COM CATEGORIAS NO MEIO (DESKTOP E TABLET) */}
+          <nav className="hidden md:flex items-center gap-5 lg:gap-7 overflow-x-auto text-xs lg:text-sm uppercase tracking-wider text-neutral-300 py-1 scrollbar-none">
+            {categorias.map((cat, idx) => (
+              <button 
+                key={idx} 
+                onClick={() => setCategoriaSelecionada(cat)}
+                className={`transition cursor-pointer whitespace-nowrap pb-0.5 ${
+                  categoriaSelecionada === cat 
+                    ? 'text-rose-400 border-b-2 border-rose-500 font-semibold' 
+                    : 'hover:text-rose-300'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </nav>
+
+          {/* AÇÕES À DIREITA (BOTÃO ADMIN + SACOLA) */}
+          <div className="flex items-center gap-3 shrink-0">
+            <button 
+              onClick={() => setMostrarModalAdmin(true)}
+              className="bg-rose-600 hover:bg-rose-700 text-white px-3.5 py-2 rounded-lg text-xs font-semibold uppercase tracking-wider flex items-center gap-2 transition cursor-pointer border border-rose-400/30"
+              title="Painel Administrativo - Cadastrar Produto"
+            >
+              <PlusCircle className="w-4 h-4" />
+              <span className="hidden sm:inline">Novo Produto</span>
+            </button>
+
+            <button 
+              className="p-2 bg-neutral-900 hover:bg-neutral-800 text-neutral-200 hover:text-white rounded-lg transition border border-neutral-800 relative cursor-pointer"
+              title="Sacola de Compras"
+            >
+              <ShoppingBag className="w-5 h-5 text-rose-400" />
+            </button>
+          </div>
+        </div>
+
+        {/* SUB-NAVBAR CATEGORIAS PARA TELAS PEQUENAS (MOBILE) */}
+        <div className="md:hidden flex items-center gap-4 overflow-x-auto pt-3 pb-1 text-xs uppercase tracking-wider text-neutral-300 scrollbar-none border-t border-neutral-800/60 mt-2">
+          {categorias.map((cat, idx) => (
+            <button 
+              key={idx} 
+              onClick={() => setCategoriaSelecionada(cat)}
+              className={`transition cursor-pointer whitespace-nowrap pb-0.5 ${
+                categoriaSelecionada === cat 
+                  ? 'text-rose-400 border-b-2 border-rose-500 font-semibold' 
+                  : 'hover:text-rose-300'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+      </header>
 
       {/* MODAL / PAINEL ADMINISTRATIVO */}
       {mostrarModalAdmin && (
@@ -223,37 +283,6 @@ export default function App() {
         </div>
       )}
 
-      {/* TOPO / HEADER */}
-      <header className="border-b border-neutral-800 bg-black py-8 px-4 text-center">
-        <div className="flex justify-center items-center mb-2">
-          <img 
-            src="/logo.png" 
-            alt="Vitrine Delas Logo" 
-            className="h-40 md:h-52 w-auto object-contain mx-auto"
-          />
-        </div>
-        <p className="text-xs md:text-sm text-rose-300/80 italic mt-2">Seu estilo, suas escolhas, sua melhor versão. ♥</p>
-      </header>
-
-      {/* BARRA DE CATEGORIAS */}
-      <nav className="bg-neutral-900 border-b border-neutral-800 py-3 px-4 overflow-x-auto sticky top-0 z-40 shadow-md">
-        <div className="flex justify-start md:justify-center gap-6 min-w-max text-sm uppercase tracking-wider text-neutral-300">
-          {categorias.map((cat, idx) => (
-            <button 
-              key={idx} 
-              onClick={() => setCategoriaSelecionada(cat)}
-              className={`transition cursor-pointer pb-1 ${
-                categoriaSelecionada === cat 
-                  ? 'text-rose-400 border-b-2 border-rose-500 font-semibold' 
-                  : 'hover:text-rose-300'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-      </nav>
-
       {/* BANNER HERO */}
       <section className="relative bg-gradient-to-r from-neutral-900 to-rose-950/40 py-16 px-6 text-center border-b border-neutral-800">
         <div className="max-w-3xl mx-auto space-y-4">
@@ -306,7 +335,7 @@ export default function App() {
         </div>
       </section>
 
-{/* VITRINE DE PRODUTOS */}
+      {/* VITRINE DE PRODUTOS */}
       <main className="max-w-7xl mx-auto py-12 px-4">
         <div className="flex justify-between items-center mb-8">
           <h3 className="text-2xl font-serif text-rose-200 border-l-4 border-rose-500 pl-3">
