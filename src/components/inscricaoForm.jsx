@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../services/api';
 
 export default function InscricaoForm() {
   const [formData, setFormData] = useState({
@@ -23,19 +23,15 @@ export default function InscricaoForm() {
     setStatus({ loading: true, error: '', success: '' });
 
     try {
-      // Se estiver testando local use 'http://localhost:8080/inscricoes'
-      // Quando subir pro Render, substitua pelo seu link de produção do Render
-    //  await axios.post('http://localhost:8080/inscricoes', formData);
-      await axios.post('https://produtos-api-lagc.onrender.com/inscricoes', formData);
-      
-
-
+      // Requisita via instância centralizada do Axios
+      await api.post('/inscricoes', formData);
       
       setStatus({ 
         loading: false, 
         error: '', 
         success: 'Cadastro realizado com sucesso! Em breve entraremos em contato.' 
       });
+      
       setFormData({
         nomeCompleto: '',
         idade: '',
@@ -46,7 +42,7 @@ export default function InscricaoForm() {
         fotoUrl: ''
       });
     } catch (err) {
-      console.error(err);
+      console.error('Erro no cadastro:', err);
       setStatus({ 
         loading: false, 
         error: 'Erro ao enviar cadastro. Verifique os dados ou tente novamente mais tarde.', 
@@ -64,8 +60,16 @@ export default function InscricaoForm() {
         </div>
 
         <form onSubmit={handleSubmit} className="p-8 space-y-5">
-          {status.success && <div className="p-4 bg-emerald-950 border border-emerald-500 text-emerald-300 rounded-xl text-center font-semibold">{status.success}</div>}
-          {status.error && <div className="p-4 bg-rose-950 border border-rose-500 text-rose-300 rounded-xl text-center font-semibold">{status.error}</div>}
+          {status.success && (
+            <div className="p-4 bg-emerald-950 border border-emerald-500 text-emerald-300 rounded-xl text-center font-semibold">
+              {status.success}
+            </div>
+          )}
+          {status.error && (
+            <div className="p-4 bg-rose-950 border border-rose-500 text-rose-300 rounded-xl text-center font-semibold">
+              {status.error}
+            </div>
+          )}
 
           <div>
             <label className="block text-sm font-semibold mb-1 text-slate-300">Nome Completo do Modelo *</label>
@@ -89,8 +93,8 @@ export default function InscricaoForm() {
                 value={formData.idade} 
                 onChange={handleChange} 
                 required 
-                min="6" 
-                max="15" 
+                min="1" 
+                max="100" 
                 className="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl focus:ring-2 focus:ring-pink-500 outline-none text-white placeholder-slate-600" 
                 placeholder="Ex: 12" 
               />
