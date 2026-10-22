@@ -93,7 +93,7 @@ export default function App() {
     }
   };
 
-  const handleCadastrarProduto = async (e) => {
+ const handleCadastrarProduto = async (e) => {
     e.preventDefault();
     setEnviando(true);
     setMensagemStatus({ tipo: '', texto: '' });
@@ -108,20 +108,30 @@ export default function App() {
     };
 
     try {
+      // Envia diretamente para a API remota ou local configurada no src/services/api.js
       await api.post('/produtos/cadastrar', payload);
-      setMensagemStatus({ tipo: 'sucesso', texto: 'Produto cadastrado com sucesso!' });
+      
+      setMensagemStatus({ tipo: 'sucesso', texto: 'Produto cadastrado com sucesso no Banco de Dados!' });
       carregarProdutos();
-    } catch (error) {
-      const itemNovoLocal = { ...payload, id: Date.now(), freteGratis: true, rating: 5.0, badge: 'NOVO' };
-      setProdutos(prev => [itemNovoLocal, ...prev]);
-      setMensagemStatus({ tipo: 'sucesso', texto: 'Cadastrado na visualização!' });
-    } finally {
-      setNovoProduto({ name: '', description: '', price: '', stock: 10, imageUrl: '', categoria: { id: 1 } });
-      setEnviando(false);
+      
+      // Fecha o modal após 1.5 segundos
       setTimeout(() => {
         setMostrarModalAdmin(false);
         setMensagemStatus({ tipo: '', texto: '' });
-      }, 1200);
+        setNovoProduto({ name: '', description: '', price: '', stock: 10, imageUrl: '', categoria: { id: 1 } });
+      }, 1500);
+
+    } catch (error) {
+      console.error('Erro detalhado ao cadastrar produto:', error);
+      
+      // Mostra o erro real na tela para sabermos se foi CORS, 404, etc.
+      const mensagemErro = error.response?.data?.message || error.message || 'Erro desconhecido ao conectar com a API';
+      setMensagemStatus({ 
+        tipo: 'erro', 
+        texto: `Falha ao salvar no banco: ${mensagemErro}` 
+      });
+    } finally {
+      setEnviando(false);
     }
   };
 
