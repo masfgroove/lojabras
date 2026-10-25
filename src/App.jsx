@@ -53,9 +53,7 @@ export default function App() {
     try {
       setLoading(true);
       const response = await api.get('/produtos');
-      console.log('Dados recebidos da API:', response.data); // Para ver no F12 se necessário
-
-      // Trata se veio como array direto ou objeto paginado do Spring Boot
+      
       let dadosBanco = [];
       if (Array.isArray(response.data)) {
         dadosBanco = response.data;
@@ -98,7 +96,7 @@ export default function App() {
         descricao: novoProduto.descricao || novoProduto.titulo,
         preco: parseFloat(novoProduto.preco),
         quantidadeEstoque: parseInt(novoProduto.quantidadeEstoque || 10),
-        imageUrl: novoProduto.imageUrl || 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&q=80&w=600',
+        urlImg: novoProduto.imageUrl || 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&q=80&w=600',
         categoria: novoProduto.categoria
       };
 
@@ -137,23 +135,30 @@ export default function App() {
   const produtosProcessados = produtos.filter(p => {
     if (!p) return false;
 
-    let catNome = '';
-    let catId = null;
+    // Se "Todos" estiver selecionado, passa direto pela categoria
+    let bateCategoria = categoriaSelecionada === 'Todos';
 
-    if (typeof p.categoria === 'string') {
-      catNome = p.categoria;
-    } else if (p.categoria && typeof p.categoria === 'object') {
-      catId = p.categoria.id;
-      catNome = p.categoria.nome || p.categoria.name || '';
+    if (!bateCategoria) {
+      let catId = null;
+      let catNome = '';
+
+      if (typeof p.categoria === 'object' && p.categoria !== null) {
+        catId = p.categoria.id;
+        catNome = p.categoria.nome || p.categoria.name || '';
+      } else if (typeof p.categoria === 'number') {
+        catId = p.categoria;
+      } else if (typeof p.categoria === 'string') {
+        catNome = p.categoria;
+      }
+
+      // Encontra a categoria correspondente na lista oficial pelo nome selecionado na barra lateral
+      const catAlvo = categoriasLista.find(c => c.name.toLowerCase() === categoriaSelecionada.toLowerCase());
+
+      if (catAlvo) {
+        // Compara tanto pelo ID quanto pelo nome da categoria
+        bateCategoria = (catId === catAlvo.id) || (catNome.toLowerCase() === catAlvo.name.toLowerCase());
+      }
     }
-
-    if (!catNome && catId !== null) {
-      const encontrada = categoriasLista.find(c => c.id === catId);
-      if (encontrada) catNome = encontrada.name;
-    }
-
-    const bateCategoria = categoriaSelecionada === 'Todos' || 
-      (catNome && catNome.toLowerCase() === categoriaSelecionada.toLowerCase());
 
     const nomeProd = p.titulo || p.name || '';
     const bateBusca = nomeProd.toLowerCase().includes(busca.toLowerCase());
@@ -307,12 +312,12 @@ export default function App() {
               <div className="text-center py-20 text-neutral-400">Carregando catálogo...</div>
             ) : produtosProcessados.length === 0 ? (
               <div className="text-center py-16 bg-neutral-900/30 rounded-xl border border-neutral-800 p-8 space-y-3">
-                <p className="text-neutral-300 font-medium">Nenhum produto cadastrado no banco de dados.</p>
+                <p className="text-neutral-300 font-medium">Nenhum produto encontrado nesta categoria.</p>
                 <button 
-                  onClick={() => setMostrarModalAdmin(true)}
+                  onClick={() => setCategoriaSelecionada('Todos')}
                   className="text-xs bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded transition"
                 >
-                  Cadastrar Primeiro Produto
+                  Ver Todos os Produtos
                 </button>
               </div>
             ) : (
@@ -321,7 +326,7 @@ export default function App() {
                   const prodId = p.id || idx;
                   const prodNome = p.titulo || p.name || 'Produto Sem Nome';
                   const prodPreco = p.preco || p.price || 0;
-                  const prodImg = p.imageUrl || p.image || 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&q=80&w=600';
+                  const prodImg = p.urlImg || p.imageUrl || p.image || 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&q=80&w=600';
 
                   return (
                     <div 
@@ -492,7 +497,7 @@ export default function App() {
                   {carrinho.map((item, i) => (
                     <div key={i} className="flex gap-3 bg-neutral-950 p-3 rounded-lg border border-neutral-800 items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <img src={item.imageUrl || item.image} alt="" className="w-12 h-12 rounded object-cover" />
+                        <img src={item.urlImg || item.imageUrl || item.image} alt="" className="w-12 h-12 rounded object-cover" />
                         <div>
                           <p className="text-xs font-medium text-white">{item.titulo || item.name}</p>
                           <p className="text-xs text-rose-400 font-bold">R$ {parseFloat(item.preco || item.price).toFixed(2)}</p>
