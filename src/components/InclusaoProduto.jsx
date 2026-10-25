@@ -168,5 +168,6 @@ export default function InclusaoProduto({ onProdutoCadastrado }) {
         </form>
       </div>
     </section>
+    
   );
 }
