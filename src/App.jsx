@@ -13,8 +13,7 @@ export default function App() {
   const [apenasFreteGratis, setApenasFreteGratis] = useState(false);
   const [loading, setLoading] = useState(true);
 
-<<<<<<< HEAD
-  // Modais
+  // Modais e Carrinho
   const [mostrarModalAdmin, setMostrarModalAdmin] = useState(false);
   const [mostrarCarrinho, setMostrarCarrinho] = useState(false);
   const [carrinho, setCarrinho] = useState([]);
@@ -32,27 +31,25 @@ export default function App() {
     { id: 9, name: 'Make' }
   ];
 
-  // Produtos iniciais garante que a vitrine nunca fique sem peças nas abas
+  // Produtos Padrão para enriquecer a vitrine
   const produtosPadrao = [
-    { id: 101, name: 'Calça Wide Leg Jeans Cós Alto Empina Bumbum', price: 129.90, freteGratis: true, badge: 'OFERTA DO DIA', rating: 4.9, vendas: 120, imageUrl: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&q=80&w=600', categoria: { id: 1, name: 'Jeans' } },
-    { id: 102, name: 'Calça Mom Jeans Vintage Cintura Alta', price: 119.90, freteGratis: true, badge: 'MAIS VENDIDO', rating: 4.8, vendas: 85, imageUrl: 'https://images.unsplash.com/photo-1582552938357-32b906df40cb?auto=format&fit=crop&q=80&w=600', categoria: { id: 1, name: 'Jeans' } },
-    { id: 103, name: 'Jaqueta Jeans Oversized Estonada', price: 189.90, freteGratis: true, badge: 'LANÇAMENTO', rating: 5.0, vendas: 40, imageUrl: 'https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&q=80&w=600', categoria: { id: 1, name: 'Jeans' } },
-    { id: 104, name: 'Short Jeans Barra Desfiada', price: 79.90, freteGratis: false, badge: 'TENDÊNCIA', rating: 4.7, vendas: 210, imageUrl: 'https://images.unsplash.com/photo-1591195853828-11db59a44f6b?auto=format&fit=crop&q=80&w=600', categoria: { id: 1, name: 'Jeans' } },
-    { id: 105, name: 'Vestido Midi Floral Verão Leve', price: 99.90, freteGratis: true, badge: 'OFERTA IMPERDÍVEL', rating: 4.9, vendas: 65, imageUrl: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&q=80&w=600', categoria: { id: 2, name: 'Verão' } },
-    { id: 106, name: 'Cropped Feminino Canelado Gola Alta', price: 49.90, freteGratis: false, badge: 'PROMOÇÃO', rating: 4.6, vendas: 310, imageUrl: 'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&q=80&w=600', categoria: { id: 4, name: 'Casual' } },
-    { id: 107, name: 'Blazer Alfaiataria Acinturado Premium', price: 199.90, freteGratis: true, badge: 'DESTAQUE', rating: 4.9, vendas: 92, imageUrl: 'https://images.unsplash.com/photo-1591369822096-ffd140ec948f?auto=format&fit=crop&q=80&w=600', categoria: { id: 5, name: 'Trabalho' } },
-    { id: 108, name: 'Vestido Curto Festas Brilho Satin', price: 159.90, freteGratis: true, badge: 'MAIS VENDIDO', rating: 4.8, vendas: 140, imageUrl: 'https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&q=80&w=600', categoria: { id: 3, name: 'Noite' } }
+    { id: 101, titulo: 'Calça Wide Leg Jeans Cós Alto Empina Bumbum', preco: 129.90, freteGratis: true, badge: 'OFERTA DO DIA', rating: 4.9, vendas: 120, imageUrl: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&q=80&w=600', categoria: { id: 1, nome: 'Jeans' } },
+    { id: 102, titulo: 'Calça Mom Jeans Vintage Cintura Alta', preco: 119.90, freteGratis: true, badge: 'MAIS VENDIDO', rating: 4.8, vendas: 85, imageUrl: 'https://images.unsplash.com/photo-1582552938357-32b906df40cb?auto=format&fit=crop&q=80&w=600', categoria: { id: 1, nome: 'Jeans' } },
+    { id: 103, titulo: 'Jaqueta Jeans Oversized Estonada', preco: 189.90, freteGratis: true, badge: 'LANÇAMENTO', rating: 5.0, vendas: 40, imageUrl: 'https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&q=80&w=600', categoria: { id: 1, nome: 'Jeans' } },
+    { id: 104, titulo: 'Short Jeans Barra Desfiada', preco: 79.90, freteGratis: false, badge: 'TENDÊNCIA', rating: 4.7, vendas: 210, imageUrl: 'https://images.unsplash.com/photo-1591195853828-11db59a44f6b?auto=format&fit=crop&q=80&w=600', categoria: { id: 1, nome: 'Jeans' } },
+    { id: 105, titulo: 'Vestido Midi Floral Verão Leve', preco: 99.90, freteGratis: true, badge: 'OFERTA IMPERDÍVEL', rating: 4.9, vendas: 65, imageUrl: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&q=80&w=600', categoria: { id: 2, nome: 'Verão' } },
+    { id: 106, titulo: 'Cropped Feminino Canelado Gola Alta', preco: 49.90, freteGratis: false, badge: 'PROMOÇÃO', rating: 4.6, vendas: 310, imageUrl: 'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&q=80&w=600', categoria: { id: 4, nome: 'Casual' } },
+    { id: 107, titulo: 'Blazer Alfaiataria Acinturado Premium', preco: 199.90, freteGratis: true, badge: 'DESTAQUE', rating: 4.9, vendas: 92, imageUrl: 'https://images.unsplash.com/photo-1591369822096-ffd140ec948f?auto=format&fit=crop&q=80&w=600', categoria: { id: 5, nome: 'Trabalho' } },
+    { id: 108, titulo: 'Vestido Curto Festas Brilho Satin', preco: 159.90, freteGratis: true, badge: 'MAIS VENDIDO', rating: 4.8, vendas: 140, imageUrl: 'https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&q=80&w=600', categoria: { id: 3, nome: 'Noite' } }
   ];
 
-  // Formulário Admin
-=======
-  // Estados do formulário de cadastro de novo produto alinhados com o backend do LojaBrás
->>>>>>> 2b1a1db (feat: atualiza front-end integrado com backend do LojaBrás no Render)
+  // Formulário Admin alinhado com o backend LojaBrás (`/produtos`)
   const [novoProduto, setNovoProduto] = useState({
     titulo: '',
     descricao: '',
     preco: '',
     quantidadeEstoque: 10,
+    imageUrl: '',
     categoria: { id: 1 }
   });
   const [enviando, setEnviando] = useState(false);
@@ -65,11 +62,9 @@ export default function App() {
   const carregarProdutos = async () => {
     try {
       setLoading(true);
-<<<<<<< HEAD
-      const response = await api.get('/produtos/listar');
+      const response = await api.get('/produtos');
       const dadosBanco = Array.isArray(response.data) ? response.data : (response.data.produtos || []);
       
-      // Mescla o que veio do Banco no Render com o catálogo padrão para não deixar abas vazias
       if (dadosBanco.length > 0) {
         setProdutos([...dadosBanco, ...produtosPadrao]);
       } else {
@@ -78,18 +73,6 @@ export default function App() {
     } catch (error) {
       console.warn('Erro ao conectar na API, usando lista padrão:', error);
       setProdutos(produtosPadrao);
-=======
-      // Rota correta validada no nosso backend LojaBrás
-      const response = await api.get('/produtos');
-      const dados = Array.isArray(response.data) ? response.data : (response.data.produtos || []);
-      setProdutos(dados);
-    } catch (error) {
-      console.error('Erro ao buscar produtos do backend:', error);
-      setProdutos([
-        { id: 1, titulo: 'Cropped Canelado', preco: 39.90, categoria: { nome: 'Make' } },
-        { id: 2, titulo: 'Calça Wide Leg', preco: 99.90, categoria: { nome: 'Jeans' } }
-      ]);
->>>>>>> 2b1a1db (feat: atualiza front-end integrado com backend do LojaBrás no Render)
     } finally {
       setLoading(false);
     }
@@ -99,37 +82,21 @@ export default function App() {
     const { name, value } = e.target;
     if (name === 'categoriaId') {
       const idCat = parseInt(value);
-      const catObj = categoriasLista.find(c => c.id === idCat);
       setNovoProduto({ 
         ...novoProduto, 
-        categoria: { id: idCat, name: catObj ? catObj.name : 'Geral' } 
+        categoria: { id: idCat } 
       });
     } else {
       setNovoProduto({ ...novoProduto, [name]: value });
     }
   };
 
- const handleCadastrarProduto = async (e) => {
+  const handleCadastrarProduto = async (e) => {
     e.preventDefault();
     setEnviando(true);
     setMensagemStatus({ tipo: '', texto: '' });
 
-    const payload = {
-      name: novoProduto.name,
-      description: novoProduto.description || novoProduto.name,
-      price: parseFloat(novoProduto.price),
-      stock: parseInt(novoProduto.stock || 10),
-      imageUrl: novoProduto.imageUrl || 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&q=80&w=600',
-      categoria: { id: novoProduto.categoria.id }
-    };
-
     try {
-<<<<<<< HEAD
-      // Envia diretamente para a API remota ou local configurada no src/services/api.js
-      await api.post('/produtos/cadastrar', payload);
-      
-      setMensagemStatus({ tipo: 'sucesso', texto: 'Produto cadastrado com sucesso no Banco de Dados!' });
-=======
       const payload = {
         titulo: novoProduto.titulo,
         descricao: novoProduto.descricao || novoProduto.titulo,
@@ -138,7 +105,6 @@ export default function App() {
         categoria: novoProduto.categoria
       };
 
-      // Rota POST correta do LojaBrás
       await api.post('/produtos', payload);
 
       setMensagemStatus({
@@ -146,25 +112,20 @@ export default function App() {
         texto: 'Produto cadastrado com sucesso no banco de dados!'
       });
 
-      setNovoProduto({ titulo: '', descricao: '', preco: '', quantidadeEstoque: 10, categoria: { id: 1 } });
->>>>>>> 2b1a1db (feat: atualiza front-end integrado com backend do LojaBrás no Render)
+      setNovoProduto({ titulo: '', descricao: '', preco: '', quantidadeEstoque: 10, imageUrl: '', categoria: { id: 1 } });
       carregarProdutos();
       
-      // Fecha o modal após 1.5 segundos
       setTimeout(() => {
         setMostrarModalAdmin(false);
         setMensagemStatus({ tipo: '', texto: '' });
-        setNovoProduto({ name: '', description: '', price: '', stock: 10, imageUrl: '', categoria: { id: 1 } });
       }, 1500);
 
     } catch (error) {
-      console.error('Erro detalhado ao cadastrar produto:', error);
-      
-      // Mostra o erro real na tela para sabermos se foi CORS, 404, etc.
-      const mensagemErro = error.response?.data?.message || error.message || 'Erro desconhecido ao conectar com a API';
-      setMensagemStatus({ 
-        tipo: 'erro', 
-        texto: `Falha ao salvar no banco: ${mensagemErro}` 
+      console.error('Erro ao cadastrar produto:', error);
+      const mensagemErro = error.response?.data?.message || error.message || 'Erro ao conectar com a API';
+      setMensagemStatus({
+        tipo: 'erro',
+        texto: `Falha ao salvar: ${mensagemErro}`
       });
     } finally {
       setEnviando(false);
@@ -176,12 +137,9 @@ export default function App() {
     setMostrarCarrinho(true);
   };
 
-  // Lógica Corrigida de Filtro por Categoria (Resolve o problema do clique no Jeans/Casual/etc)
   const produtosProcessados = produtos.filter(p => {
     if (!p) return false;
-<<<<<<< HEAD
 
-    // Obtém o nome da categoria vinda da API/Objeto/ID
     let catNome = '';
     let catId = null;
 
@@ -189,34 +147,28 @@ export default function App() {
       catNome = p.categoria;
     } else if (p.categoria && typeof p.categoria === 'object') {
       catId = p.categoria.id;
-      catNome = p.categoria.name || p.categoria.nome || '';
+      catNome = p.categoria.nome || p.categoria.name || '';
     }
 
-    // Se o banco trouxe só o ID, encontra o nome na lista oficial
     if (!catNome && catId !== null) {
       const encontrada = categoriasLista.find(c => c.id === catId);
       if (encontrada) catNome = encontrada.name;
     }
 
-    const catObjetoSelecionado = categoriasLista.find(c => c.name.toLowerCase() === categoriaSelecionada.toLowerCase());
-
     const bateCategoria = categoriaSelecionada === 'Todos' || 
-      (catNome && catNome.toLowerCase() === categoriaSelecionada.toLowerCase()) ||
-      (catObjetoSelecionado && catId === catObjetoSelecionado.id);
+      (catNome && catNome.toLowerCase() === categoriaSelecionada.toLowerCase());
 
-    const bateBusca = p.name?.toLowerCase().includes(busca.toLowerCase());
+    const nomeProd = p.titulo || p.name || '';
+    const bateBusca = nomeProd.toLowerCase().includes(busca.toLowerCase());
     const bateFrete = !apenasFreteGratis || p.freteGratis;
 
     return bateCategoria && bateBusca && bateFrete;
   }).sort((a, b) => {
-    if (ordenacao === 'menor-preco') return (a.price || 0) - (b.price || 0);
-    if (ordenacao === 'maior-preco') return (b.price || 0) - (a.price || 0);
+    const precoA = a.preco || a.price || 0;
+    const precoB = b.preco || b.price || 0;
+    if (ordenacao === 'menor-preco') return precoA - precoB;
+    if (ordenacao === 'maior-preco') return precoB - precoA;
     return 0;
-=======
-    const catProduto = typeof p.categoria === 'string' ? p.categoria : (p.categoria?.nome || p.categoria?.name || 'Geral');
-    if (categoriaSelecionada === 'Todos') return true;
-    return catProduto.toLowerCase() === categoriaSelecionada.toLowerCase();
->>>>>>> 2b1a1db (feat: atualiza front-end integrado com backend do LojaBrás no Render)
   });
 
   return (
@@ -287,7 +239,6 @@ export default function App() {
 
       {/* ÁREA DE PRODUTOS */}
       <div className="max-w-7xl mx-auto px-4 lg:px-8 py-6">
-        
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           
           {/* SIDEBAR DE CATEGORIAS */}
@@ -318,37 +269,26 @@ export default function App() {
             <div className="bg-neutral-900/40 p-4 rounded-xl border border-neutral-800 space-y-2">
               <h3 className="text-xs font-bold text-neutral-300 uppercase tracking-wider mb-3">Categorias</h3>
               <ul className="space-y-1 text-xs">
-                {categoriasLista.map((cat) => {
-                  // Calcula quantidade real disponível na categoria
-                  const qtd = produtos.filter(p => {
-                    const idCat = p.categoria?.id;
-                    const nmCat = typeof p.categoria === 'string' ? p.categoria : p.categoria?.name;
-                    return cat.id === 0 || idCat === cat.id || (nmCat && nmCat.toLowerCase() === cat.name.toLowerCase());
-                  }).length;
-
-                  return (
-                    <li key={cat.id}>
-                      <button 
-                        onClick={() => setCategoriaSelecionada(cat.name)}
-                        className={`w-full text-left py-2 px-3 rounded flex justify-between items-center transition ${
-                          categoriaSelecionada.toLowerCase() === cat.name.toLowerCase() 
-                            ? 'bg-rose-500/20 text-rose-300 font-bold border-l-4 border-rose-500' 
-                            : 'text-neutral-400 hover:text-white hover:bg-neutral-900'
-                        }`}
-                      >
-                        <span>{cat.name}</span>
-                        <span className="text-[10px] text-neutral-500">({qtd})</span>
-                      </button>
-                    </li>
-                  );
-                })}
+                {categoriasLista.map((cat) => (
+                  <li key={cat.id}>
+                    <button 
+                      onClick={() => setCategoriaSelecionada(cat.name)}
+                      className={`w-full text-left py-2 px-3 rounded flex justify-between items-center transition ${
+                        categoriaSelecionada.toLowerCase() === cat.name.toLowerCase() 
+                          ? 'bg-rose-500/20 text-rose-300 font-bold border-l-4 border-rose-500' 
+                          : 'text-neutral-400 hover:text-white hover:bg-neutral-900'
+                      }`}
+                    >
+                      <span>{cat.name}</span>
+                    </button>
+                  </li>
+                ))}
               </ul>
             </div>
           </aside>
 
           {/* GRID DE CARDS */}
           <main className="lg:col-span-3 space-y-6">
-            
             <div className="flex justify-between items-center bg-neutral-900/30 p-3 rounded-lg border border-neutral-800 text-xs">
               <span className="text-neutral-400">Mostrando <strong className="text-white">{produtosProcessados.length}</strong> produtos</span>
 
@@ -370,7 +310,7 @@ export default function App() {
               <div className="text-center py-20 text-neutral-400">Carregando catálogo...</div>
             ) : produtosProcessados.length === 0 ? (
               <div className="text-center py-16 bg-neutral-900/30 rounded-xl border border-neutral-800 p-8 space-y-3">
-                <p className="text-neutral-300 font-medium">Nenhum produto cadastrado nesta categoria no banco de dados.</p>
+                <p className="text-neutral-300 font-medium">Nenhum produto encontrado nesta categoria.</p>
                 <button 
                   onClick={() => { setCategoriaSelecionada('Todos'); setBusca(''); }}
                   className="text-xs bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded transition"
@@ -382,9 +322,9 @@ export default function App() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {produtosProcessados.map((p, idx) => {
                   const prodId = p.id || idx;
-                  const prodNome = p.name || p.nome || 'Produto Sem Nome';
-                  const prodPreco = typeof p.price === 'number' ? p.price : parseFloat(p.price || 0);
-                  const prodImg = p.imageUrl || p.image || p.fotoUrl || 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&q=80&w=600';
+                  const prodNome = p.titulo || p.name || 'Produto Sem Nome';
+                  const prodPreco = p.preco || p.price || 0;
+                  const prodImg = p.imageUrl || p.image || 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&q=80&w=600';
 
                   return (
                     <div 
@@ -410,20 +350,12 @@ export default function App() {
                           <h3 className="font-normal text-white text-sm line-clamp-2 leading-snug group-hover:text-rose-300 transition">
                             {prodNome}
                           </h3>
-                          <div className="flex items-center gap-1 text-[11px] text-neutral-400 pt-1">
-                            <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
-                            <span className="font-bold text-amber-400">{p.rating || 4.9}</span>
-                            <span>({p.vendas || 85} vendidos)</span>
-                          </div>
                         </div>
 
                         <div className="pt-2 border-t border-neutral-800/80 space-y-2">
                           <div>
                             <p className="text-2xl font-bold text-rose-300">
-                              R$ {prodPreco.toFixed(2)}
-                            </p>
-                            <p className="text-[11px] text-green-400 font-medium">
-                              em 10x de R$ {(prodPreco / 10).toFixed(2)} sem juros
+                              R$ {parseFloat(prodPreco).toFixed(2)}
                             </p>
                           </div>
 
@@ -448,75 +380,65 @@ export default function App() {
       {mostrarModalAdmin && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-neutral-900 border border-rose-500/30 rounded-xl max-w-lg w-full p-6 relative">
-            <button onClick={() => setMostrarModalAdmin(false)} className="absolute top-4 right-4 text-neutral-400 hover:text-white">
+            <button onClick={() => setMostrarModalAdmin(false)} className="absolute top-4 right-4 text-neutral-400 hover:text-white cursor-pointer">
               <X className="w-6 h-6" />
             </button>
             <h3 className="text-xl font-serif text-rose-200 mb-2">Cadastrar Produto no Banco</h3>
             
             {mensagemStatus.texto && (
-              <div className="p-3 mb-4 rounded text-xs font-medium bg-green-900/50 text-green-300 border border-green-700">
+              <div className={`p-3 mb-4 rounded text-xs font-medium ${
+                mensagemStatus.tipo === 'sucesso' ? 'bg-green-900/50 text-green-300 border border-green-700' : 'bg-red-900/50 text-red-300 border border-red-700'
+              }`}>
                 {mensagemStatus.texto}
               </div>
             )}
 
             <form onSubmit={handleCadastrarProduto} className="space-y-4">
               <div>
-<<<<<<< HEAD
-                <label className="block text-xs text-neutral-300 uppercase mb-1">Nome do Produto</label>
-                <input 
-                  type="text" name="name" value={novoProduto.name} onChange={handleInputChange} required 
-                  className="w-full bg-neutral-950 border border-neutral-800 rounded px-3 py-2 text-white text-sm"
-                />
-              </div>
-=======
-                <label className="block text-xs font-medium text-neutral-300 uppercase tracking-wider mb-1">Título do Produto</label>
+                <label className="block text-xs text-neutral-300 uppercase mb-1">Título do Produto</label>
                 <input 
                   type="text" 
-                  name="titulo"
-                  value={novoProduto.titulo}
-                  onChange={handleInputChange}
-                  required
-                  placeholder="Ex: Cropped Seda Premium" 
+                  name="titulo" 
+                  value={novoProduto.titulo} 
+                  onChange={handleInputChange} 
+                  required 
+                  placeholder="Ex: Cropped Seda Premium"
                   className="w-full bg-neutral-950 border border-neutral-800 rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-rose-500"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-neutral-300 uppercase tracking-wider mb-1">Descrição</label>
+                <label className="block text-xs text-neutral-300 uppercase mb-1">Descrição</label>
                 <input 
                   type="text" 
-                  name="descricao"
-                  value={novoProduto.descricao}
-                  onChange={handleInputChange}
-                  placeholder="Descrição detalhada do produto" 
+                  name="descricao" 
+                  value={novoProduto.descricao} 
+                  onChange={handleInputChange} 
+                  placeholder="Detalhes do produto"
                   className="w-full bg-neutral-950 border border-neutral-800 rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-rose-500"
                 />
               </div>
 
->>>>>>> 2b1a1db (feat: atualiza front-end integrado com backend do LojaBrás no Render)
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs text-neutral-300 uppercase mb-1">Preço (R$)</label>
                   <input 
-<<<<<<< HEAD
-                    type="number" step="0.01" name="price" value={novoProduto.price} onChange={handleInputChange} required 
-                    className="w-full bg-neutral-950 border border-neutral-800 rounded px-3 py-2 text-white text-sm"
-=======
                     type="number" 
-                    step="0.01"
-                    name="preco"
-                    value={novoProduto.preco}
-                    onChange={handleInputChange}
-                    required
-                    placeholder="79.90" 
+                    step="0.01" 
+                    name="preco" 
+                    value={novoProduto.preco} 
+                    onChange={handleInputChange} 
+                    required 
+                    placeholder="79.90"
                     className="w-full bg-neutral-950 border border-neutral-800 rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-rose-500"
->>>>>>> 2b1a1db (feat: atualiza front-end integrado com backend do LojaBrás no Render)
                   />
                 </div>
                 <div>
                   <label className="block text-xs text-neutral-300 uppercase mb-1">Categoria (ID)</label>
                   <select 
-                    name="categoriaId" value={novoProduto.categoria.id} onChange={handleInputChange} 
+                    name="categoriaId" 
+                    value={novoProduto.categoria.id} 
+                    onChange={handleInputChange} 
                     className="w-full bg-neutral-950 border border-neutral-800 rounded px-3 py-2 text-white text-sm"
                   >
                     {categoriasLista.filter(c => c.id !== 0).map(cat => (
@@ -525,32 +447,19 @@ export default function App() {
                   </select>
                 </div>
               </div>
-<<<<<<< HEAD
-              <div>
-                <label className="block text-xs text-neutral-300 uppercase mb-1">URL da Imagem</label>
-                <input 
-                  type="text" name="imageUrl" value={novoProduto.imageUrl} onChange={handleInputChange} 
-                  className="w-full bg-neutral-950 border border-neutral-800 rounded px-3 py-2 text-white text-sm"
-                />
-              </div>
-              <button type="submit" disabled={enviando} className="w-full bg-rose-600 hover:bg-rose-700 text-white font-medium py-2.5 rounded text-sm transition">
-                {enviando ? 'Salvando...' : 'Salvar Produto'}
-=======
 
               <button 
                 type="submit" 
-                disabled={enviando}
+                disabled={enviando} 
                 className="w-full bg-rose-600 hover:bg-rose-700 text-white font-medium py-2.5 rounded text-sm transition cursor-pointer mt-4"
               >
-                {enviando ? 'A salvar no Backend...' : 'Salvar Produto'}
->>>>>>> 2b1a1db (feat: atualiza front-end integrado com backend do LojaBrás no Render)
+                {enviando ? 'Salvando...' : 'Salvar Produto'}
               </button>
             </form>
           </div>
         </div>
       )}
 
-<<<<<<< HEAD
       {/* DRAWER CARRINHO */}
       {mostrarCarrinho && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex justify-end">
@@ -560,7 +469,7 @@ export default function App() {
                 <h3 className="text-lg font-serif text-rose-200 flex items-center gap-2">
                   <ShoppingBag className="w-5 h-5 text-rose-400" /> Sacola ({carrinho.length})
                 </h3>
-                <button onClick={() => setMostrarCarrinho(false)} className="text-neutral-400 hover:text-white">
+                <button onClick={() => setMostrarCarrinho(false)} className="text-neutral-400 hover:text-white cursor-pointer">
                   <X className="w-6 h-6" />
                 </button>
               </div>
@@ -574,8 +483,8 @@ export default function App() {
                       <div className="flex items-center gap-3">
                         <img src={item.imageUrl || item.image} alt="" className="w-12 h-12 rounded object-cover" />
                         <div>
-                          <p className="text-xs font-medium text-white">{item.name}</p>
-                          <p className="text-xs text-rose-400 font-bold">R$ {parseFloat(item.price).toFixed(2)}</p>
+                          <p className="text-xs font-medium text-white">{item.titulo || item.name}</p>
+                          <p className="text-xs text-rose-400 font-bold">R$ {parseFloat(item.preco || item.price).toFixed(2)}</p>
                         </div>
                       </div>
                     </div>
@@ -589,11 +498,11 @@ export default function App() {
                 <div className="flex justify-between text-sm font-semibold text-white">
                   <span>Total:</span>
                   <span className="text-rose-400">
-                    R$ {carrinho.reduce((acc, cur) => acc + parseFloat(cur.price || 0), 0).toFixed(2)}
+                    R$ {carrinho.reduce((acc, cur) => acc + parseFloat(cur.preco || cur.price || 0), 0).toFixed(2)}
                   </span>
                 </div>
                 <a 
-                  href={`https://wa.me/?text=${encodeURIComponent(`Olá! Quero finalizar o pedido:\n` + carrinho.map(c => `- ${c.name} (R$ ${c.price})`).join('\n'))}`}
+                  href={`https://wa.me/?text=${encodeURIComponent(`Olá! Quero finalizar o pedido:\n` + carrinho.map(c => `- ${c.titulo || c.name} (R$ ${c.preco || c.price})`).join('\n'))}`}
                   target="_blank" rel="noopener noreferrer"
                   className="w-full bg-green-600 hover:bg-green-700 text-white text-center py-3 rounded-lg text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2"
                 >
@@ -604,83 +513,6 @@ export default function App() {
           </div>
         </div>
       )}
-
-=======
-      {/* TOPO / HEADER */}
-      <header className="border-b border-neutral-800 bg-black py-8 px-4 text-center">
-        <h1 className="text-3xl md:text-4xl font-serif text-rose-200 tracking-wider">VITRINE DELAS ♥</h1>
-        <p className="text-xs md:text-sm text-rose-300/80 italic mt-2">Seu estilo, suas escolhas, sua melhor versão.</p>
-      </header>
-
-      {/* BARRA DE CATEGORIAS */}
-      <nav className="bg-neutral-900 border-b border-neutral-800 py-3 px-4 overflow-x-auto sticky top-0 z-40 shadow-md">
-        <div className="flex justify-start md:justify-center gap-6 min-w-max text-sm uppercase tracking-wider text-neutral-300">
-          {categorias.map((cat, idx) => (
-            <button 
-              key={idx} 
-              onClick={() => setCategoriaSelecionada(cat)}
-              className={`transition cursor-pointer pb-1 ${
-                categoriaSelecionada === cat 
-                  ? 'text-rose-400 border-b-2 border-rose-500 font-semibold' 
-                  : 'hover:text-rose-300'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-      </nav>
-
-      {/* VITRINE DE PRODUTOS */}
-      <main className="max-w-7xl mx-auto py-12 px-4">
-        <div className="flex justify-between items-center mb-8">
-          <h3 className="text-2xl font-serif text-rose-200 border-l-4 border-rose-500 pl-3">
-            {categoriaSelecionada === 'Todos' ? 'Achadinhos Delas ♥' : `Categoria: ${categoriaSelecionada}`}
-          </h3>
-          <span className="text-xs text-neutral-400 uppercase tracking-widest">Atualizado Semanalmente</span>
-        </div>
-
-        {loading ? (
-          <div className="text-center py-20 text-neutral-400">A carregar produtos da base de dados...</div>
-        ) : produtosFiltrados.length === 0 ? (
-          <div className="text-center py-20 text-neutral-400">Nenhum produto encontrado nesta categoria.</div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {produtosFiltrados.map((p, idx) => {
-              const prodId = p.id || idx;
-              const prodNome = p.titulo || p.name || 'Produto Sem Nome';
-              const prodPreco = typeof p.preco === 'number' ? p.preco : (typeof p.price === 'number' ? p.price : parseFloat(p.preco || p.price || 0));
-              const prodCat = typeof p.categoria === 'string' ? p.categoria : (p.categoria?.nome || p.categoria?.name || 'Moda');
-
-              return (
-                <div key={prodId} className="bg-neutral-900 border border-neutral-800 rounded-lg overflow-hidden group hover:border-rose-500/50 transition">
-                  <div className="h-64 bg-neutral-800 flex items-center justify-center text-neutral-500">
-                    <span className="text-xs text-neutral-500">[ Foto do Produto ]</span>
-                  </div>
-                  <div className="p-4 space-y-2">
-                    <span className="text-xs text-rose-400 uppercase tracking-wider">{prodCat}</span>
-                    <h4 className="font-medium text-white">{prodNome}</h4>
-                    <p className="text-lg font-bold text-rose-300">
-                      R$ {prodPreco.toFixed(2)}
-                    </p>
-                    <button className="w-full mt-2 bg-neutral-800 hover:bg-rose-600 text-white py-2 rounded text-sm transition cursor-pointer">
-                      Adicionar à Sacola
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </main>
-
-      {/* RODAPÉ */}
-      <footer className="bg-black border-t border-neutral-800 py-10 px-4 text-center text-neutral-400 text-sm">
-        <p className="font-serif text-rose-200 text-lg mb-2">VITRINE DELAS</p>
-        <p className="text-xs text-neutral-500 mb-4">Mais que moda, é sobre se sentir bem todos os dias! ♥</p>
-        <p className="text-xs text-neutral-600">www.vitridelas.com.br — Todos os direitos reservados.</p>
-      </footer>
->>>>>>> 2b1a1db (feat: atualiza front-end integrado com backend do LojaBrás no Render)
     </div>
   );
 }
