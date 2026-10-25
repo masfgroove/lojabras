@@ -12,7 +12,7 @@ export default function InclusaoProduto({ onProdutoCadastrado }) {
 
   const [status, setStatus] = useState({ loading: false, error: '', success: '' });
 
-  // Lista de categorias oficiais do LojaBrás
+  // Lista de categorias oficiais do LojaBrás alinhadas com o banco
   const categoriasLista = [
     { id: 1, name: 'Jeans' },
     { id: 2, name: 'Verão' },
@@ -65,7 +65,6 @@ export default function InclusaoProduto({ onProdutoCadastrado }) {
         categoria: { id: 1 }
       });
 
-      // Se houver uma função callback para atualizar a lista, chama ela
       if (onProdutoCadastrado) {
         onProdutoCadastrado();
       }
@@ -168,6 +167,5 @@ export default function InclusaoProduto({ onProdutoCadastrado }) {
         </form>
       </div>
     </section>
-    
   );
 }

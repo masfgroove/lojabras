@@ -18,7 +18,7 @@ export default function App() {
   const [mostrarCarrinho, setMostrarCarrinho] = useState(false);
   const [carrinho, setCarrinho] = useState([]);
 
-  // Categorias Oficiais alinhadas com o Banco (ID x Nome)
+  // Categorias Oficiais completas alinhadas com o Banco e o menu superior
   const categoriasLista = [
     { id: 0, name: 'Todos' },
     { id: 1, name: 'Jeans' },
@@ -27,8 +27,10 @@ export default function App() {
     { id: 4, name: 'Casual' },
     { id: 5, name: 'Trabalho' },
     { id: 6, name: 'Balada' },
-    { id: 7, name: 'Acessórios' },
-    { id: 9, name: 'Make' }
+    { id: 7, name: 'Festa' },
+    { id: 8, name: 'Acessórios' },
+    { id: 9, name: 'Make' },
+    { id: 10, name: 'Promoções' }
   ];
 
   // Produtos Padrão para enriquecer a vitrine
@@ -434,15 +436,17 @@ export default function App() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs text-neutral-300 uppercase mb-1">Categoria (ID)</label>
+                  <label className="block text-xs text-neutral-300 uppercase mb-1">Categoria</label>
                   <select 
                     name="categoriaId" 
                     value={novoProduto.categoria.id} 
                     onChange={handleInputChange} 
-                    className="w-full bg-neutral-950 border border-neutral-800 rounded px-3 py-2 text-white text-sm"
+                    className="w-full bg-neutral-950 border border-neutral-800 rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-rose-500 cursor-pointer"
                   >
                     {categoriasLista.filter(c => c.id !== 0).map(cat => (
-                      <option key={cat.id} value={cat.id}>ID {cat.id} - {cat.name}</option>
+                      <option key={cat.id} value={cat.id}>
+                        {cat.id} - {cat.name}
+                      </option>
                     ))}
                   </select>
                 </div>
