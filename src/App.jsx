@@ -53,9 +53,18 @@ export default function App() {
     try {
       setLoading(true);
       const response = await api.get('/produtos');
-      const dadosBanco = Array.isArray(response.data) ? response.data : (response.data.produtos || []);
-      
-      // Carrega exclusivamente os dados vindos do Banco de Dados (sem produtos de exemplo)
+      console.log('Dados recebidos da API:', response.data); // Para ver no F12 se necessário
+
+      // Trata se veio como array direto ou objeto paginado do Spring Boot
+      let dadosBanco = [];
+      if (Array.isArray(response.data)) {
+        dadosBanco = response.data;
+      } else if (response.data && Array.isArray(response.data.content)) {
+        dadosBanco = response.data.content;
+      } else if (response.data && Array.isArray(response.data.produtos)) {
+        dadosBanco = response.data.produtos;
+      }
+
       setProdutos(dadosBanco);
     } catch (error) {
       console.error('Erro ao buscar produtos do backend:', error);
