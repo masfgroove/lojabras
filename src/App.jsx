@@ -13,6 +13,7 @@ export default function App() {
   const [apenasFreteGratis, setApenasFreteGratis] = useState(false);
   const [loading, setLoading] = useState(true);
 
+<<<<<<< HEAD
   // Modais
   const [mostrarModalAdmin, setMostrarModalAdmin] = useState(false);
   const [mostrarCarrinho, setMostrarCarrinho] = useState(false);
@@ -44,12 +45,14 @@ export default function App() {
   ];
 
   // Formulário Admin
+=======
+  // Estados do formulário de cadastro de novo produto alinhados com o backend do LojaBrás
+>>>>>>> 2b1a1db (feat: atualiza front-end integrado com backend do LojaBrás no Render)
   const [novoProduto, setNovoProduto] = useState({
-    name: '',
-    description: '',
-    price: '',
-    stock: 10,
-    imageUrl: '',
+    titulo: '',
+    descricao: '',
+    preco: '',
+    quantidadeEstoque: 10,
     categoria: { id: 1 }
   });
   const [enviando, setEnviando] = useState(false);
@@ -62,6 +65,7 @@ export default function App() {
   const carregarProdutos = async () => {
     try {
       setLoading(true);
+<<<<<<< HEAD
       const response = await api.get('/produtos/listar');
       const dadosBanco = Array.isArray(response.data) ? response.data : (response.data.produtos || []);
       
@@ -74,6 +78,18 @@ export default function App() {
     } catch (error) {
       console.warn('Erro ao conectar na API, usando lista padrão:', error);
       setProdutos(produtosPadrao);
+=======
+      // Rota correta validada no nosso backend LojaBrás
+      const response = await api.get('/produtos');
+      const dados = Array.isArray(response.data) ? response.data : (response.data.produtos || []);
+      setProdutos(dados);
+    } catch (error) {
+      console.error('Erro ao buscar produtos do backend:', error);
+      setProdutos([
+        { id: 1, titulo: 'Cropped Canelado', preco: 39.90, categoria: { nome: 'Make' } },
+        { id: 2, titulo: 'Calça Wide Leg', preco: 99.90, categoria: { nome: 'Jeans' } }
+      ]);
+>>>>>>> 2b1a1db (feat: atualiza front-end integrado com backend do LojaBrás no Render)
     } finally {
       setLoading(false);
     }
@@ -108,10 +124,30 @@ export default function App() {
     };
 
     try {
+<<<<<<< HEAD
       // Envia diretamente para a API remota ou local configurada no src/services/api.js
       await api.post('/produtos/cadastrar', payload);
       
       setMensagemStatus({ tipo: 'sucesso', texto: 'Produto cadastrado com sucesso no Banco de Dados!' });
+=======
+      const payload = {
+        titulo: novoProduto.titulo,
+        descricao: novoProduto.descricao || novoProduto.titulo,
+        preco: parseFloat(novoProduto.preco),
+        quantidadeEstoque: parseInt(novoProduto.quantidadeEstoque || 10),
+        categoria: novoProduto.categoria
+      };
+
+      // Rota POST correta do LojaBrás
+      await api.post('/produtos', payload);
+
+      setMensagemStatus({
+        tipo: 'sucesso',
+        texto: 'Produto cadastrado com sucesso no banco de dados!'
+      });
+
+      setNovoProduto({ titulo: '', descricao: '', preco: '', quantidadeEstoque: 10, categoria: { id: 1 } });
+>>>>>>> 2b1a1db (feat: atualiza front-end integrado com backend do LojaBrás no Render)
       carregarProdutos();
       
       // Fecha o modal após 1.5 segundos
@@ -143,6 +179,7 @@ export default function App() {
   // Lógica Corrigida de Filtro por Categoria (Resolve o problema do clique no Jeans/Casual/etc)
   const produtosProcessados = produtos.filter(p => {
     if (!p) return false;
+<<<<<<< HEAD
 
     // Obtém o nome da categoria vinda da API/Objeto/ID
     let catNome = '';
@@ -175,6 +212,11 @@ export default function App() {
     if (ordenacao === 'menor-preco') return (a.price || 0) - (b.price || 0);
     if (ordenacao === 'maior-preco') return (b.price || 0) - (a.price || 0);
     return 0;
+=======
+    const catProduto = typeof p.categoria === 'string' ? p.categoria : (p.categoria?.nome || p.categoria?.name || 'Geral');
+    if (categoriaSelecionada === 'Todos') return true;
+    return catProduto.toLowerCase() === categoriaSelecionada.toLowerCase();
+>>>>>>> 2b1a1db (feat: atualiza front-end integrado com backend do LojaBrás no Render)
   });
 
   return (
@@ -419,18 +461,56 @@ export default function App() {
 
             <form onSubmit={handleCadastrarProduto} className="space-y-4">
               <div>
+<<<<<<< HEAD
                 <label className="block text-xs text-neutral-300 uppercase mb-1">Nome do Produto</label>
                 <input 
                   type="text" name="name" value={novoProduto.name} onChange={handleInputChange} required 
                   className="w-full bg-neutral-950 border border-neutral-800 rounded px-3 py-2 text-white text-sm"
                 />
               </div>
+=======
+                <label className="block text-xs font-medium text-neutral-300 uppercase tracking-wider mb-1">Título do Produto</label>
+                <input 
+                  type="text" 
+                  name="titulo"
+                  value={novoProduto.titulo}
+                  onChange={handleInputChange}
+                  required
+                  placeholder="Ex: Cropped Seda Premium" 
+                  className="w-full bg-neutral-950 border border-neutral-800 rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-rose-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-neutral-300 uppercase tracking-wider mb-1">Descrição</label>
+                <input 
+                  type="text" 
+                  name="descricao"
+                  value={novoProduto.descricao}
+                  onChange={handleInputChange}
+                  placeholder="Descrição detalhada do produto" 
+                  className="w-full bg-neutral-950 border border-neutral-800 rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-rose-500"
+                />
+              </div>
+
+>>>>>>> 2b1a1db (feat: atualiza front-end integrado com backend do LojaBrás no Render)
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs text-neutral-300 uppercase mb-1">Preço (R$)</label>
                   <input 
+<<<<<<< HEAD
                     type="number" step="0.01" name="price" value={novoProduto.price} onChange={handleInputChange} required 
                     className="w-full bg-neutral-950 border border-neutral-800 rounded px-3 py-2 text-white text-sm"
+=======
+                    type="number" 
+                    step="0.01"
+                    name="preco"
+                    value={novoProduto.preco}
+                    onChange={handleInputChange}
+                    required
+                    placeholder="79.90" 
+                    className="w-full bg-neutral-950 border border-neutral-800 rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-rose-500"
+>>>>>>> 2b1a1db (feat: atualiza front-end integrado com backend do LojaBrás no Render)
                   />
                 </div>
                 <div>
@@ -445,6 +525,7 @@ export default function App() {
                   </select>
                 </div>
               </div>
+<<<<<<< HEAD
               <div>
                 <label className="block text-xs text-neutral-300 uppercase mb-1">URL da Imagem</label>
                 <input 
@@ -454,12 +535,22 @@ export default function App() {
               </div>
               <button type="submit" disabled={enviando} className="w-full bg-rose-600 hover:bg-rose-700 text-white font-medium py-2.5 rounded text-sm transition">
                 {enviando ? 'Salvando...' : 'Salvar Produto'}
+=======
+
+              <button 
+                type="submit" 
+                disabled={enviando}
+                className="w-full bg-rose-600 hover:bg-rose-700 text-white font-medium py-2.5 rounded text-sm transition cursor-pointer mt-4"
+              >
+                {enviando ? 'A salvar no Backend...' : 'Salvar Produto'}
+>>>>>>> 2b1a1db (feat: atualiza front-end integrado com backend do LojaBrás no Render)
               </button>
             </form>
           </div>
         </div>
       )}
 
+<<<<<<< HEAD
       {/* DRAWER CARRINHO */}
       {mostrarCarrinho && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex justify-end">
@@ -514,6 +605,82 @@ export default function App() {
         </div>
       )}
 
+=======
+      {/* TOPO / HEADER */}
+      <header className="border-b border-neutral-800 bg-black py-8 px-4 text-center">
+        <h1 className="text-3xl md:text-4xl font-serif text-rose-200 tracking-wider">VITRINE DELAS ♥</h1>
+        <p className="text-xs md:text-sm text-rose-300/80 italic mt-2">Seu estilo, suas escolhas, sua melhor versão.</p>
+      </header>
+
+      {/* BARRA DE CATEGORIAS */}
+      <nav className="bg-neutral-900 border-b border-neutral-800 py-3 px-4 overflow-x-auto sticky top-0 z-40 shadow-md">
+        <div className="flex justify-start md:justify-center gap-6 min-w-max text-sm uppercase tracking-wider text-neutral-300">
+          {categorias.map((cat, idx) => (
+            <button 
+              key={idx} 
+              onClick={() => setCategoriaSelecionada(cat)}
+              className={`transition cursor-pointer pb-1 ${
+                categoriaSelecionada === cat 
+                  ? 'text-rose-400 border-b-2 border-rose-500 font-semibold' 
+                  : 'hover:text-rose-300'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+      </nav>
+
+      {/* VITRINE DE PRODUTOS */}
+      <main className="max-w-7xl mx-auto py-12 px-4">
+        <div className="flex justify-between items-center mb-8">
+          <h3 className="text-2xl font-serif text-rose-200 border-l-4 border-rose-500 pl-3">
+            {categoriaSelecionada === 'Todos' ? 'Achadinhos Delas ♥' : `Categoria: ${categoriaSelecionada}`}
+          </h3>
+          <span className="text-xs text-neutral-400 uppercase tracking-widest">Atualizado Semanalmente</span>
+        </div>
+
+        {loading ? (
+          <div className="text-center py-20 text-neutral-400">A carregar produtos da base de dados...</div>
+        ) : produtosFiltrados.length === 0 ? (
+          <div className="text-center py-20 text-neutral-400">Nenhum produto encontrado nesta categoria.</div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {produtosFiltrados.map((p, idx) => {
+              const prodId = p.id || idx;
+              const prodNome = p.titulo || p.name || 'Produto Sem Nome';
+              const prodPreco = typeof p.preco === 'number' ? p.preco : (typeof p.price === 'number' ? p.price : parseFloat(p.preco || p.price || 0));
+              const prodCat = typeof p.categoria === 'string' ? p.categoria : (p.categoria?.nome || p.categoria?.name || 'Moda');
+
+              return (
+                <div key={prodId} className="bg-neutral-900 border border-neutral-800 rounded-lg overflow-hidden group hover:border-rose-500/50 transition">
+                  <div className="h-64 bg-neutral-800 flex items-center justify-center text-neutral-500">
+                    <span className="text-xs text-neutral-500">[ Foto do Produto ]</span>
+                  </div>
+                  <div className="p-4 space-y-2">
+                    <span className="text-xs text-rose-400 uppercase tracking-wider">{prodCat}</span>
+                    <h4 className="font-medium text-white">{prodNome}</h4>
+                    <p className="text-lg font-bold text-rose-300">
+                      R$ {prodPreco.toFixed(2)}
+                    </p>
+                    <button className="w-full mt-2 bg-neutral-800 hover:bg-rose-600 text-white py-2 rounded text-sm transition cursor-pointer">
+                      Adicionar à Sacola
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </main>
+
+      {/* RODAPÉ */}
+      <footer className="bg-black border-t border-neutral-800 py-10 px-4 text-center text-neutral-400 text-sm">
+        <p className="font-serif text-rose-200 text-lg mb-2">VITRINE DELAS</p>
+        <p className="text-xs text-neutral-500 mb-4">Mais que moda, é sobre se sentir bem todos os dias! ♥</p>
+        <p className="text-xs text-neutral-600">www.vitridelas.com.br — Todos os direitos reservados.</p>
+      </footer>
+>>>>>>> 2b1a1db (feat: atualiza front-end integrado com backend do LojaBrás no Render)
     </div>
   );
 }

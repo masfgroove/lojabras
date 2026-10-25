@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
+<<<<<<< HEAD
 import api from '../services/api';
+=======
+import api from './services/api'; // Importando a instância centralizada do axios
+>>>>>>> 2b1a1db (feat: atualiza front-end integrado com backend do LojaBrás no Render)
 
-export default function InscricaoForm() {
+export default function ClienteForm() {
   const [formData, setFormData] = useState({
-    nomeCompleto: '',
-    idade: '',
-    nomeResponsavel: '',
-    telefone: '',
+    nome: '',
     email: '',
-    lojaIndicacao: '',
-    fotoUrl: ''
+    senha: ''
   });
 
   const [status, setStatus] = useState({ loading: false, error: '', success: '' });
@@ -23,42 +23,44 @@ export default function InscricaoForm() {
     setStatus({ loading: true, error: '', success: '' });
 
     try {
+<<<<<<< HEAD
       // Requisita via instância centralizada do Axios
       await api.post('/inscricoes', formData);
+=======
+      // Faz o POST para a rota /clientes do nosso backend LojaBrás no Render
+      await api.post('/clientes', formData);
+>>>>>>> 2b1a1db (feat: atualiza front-end integrado com backend do LojaBrás no Render)
       
       setStatus({ 
         loading: false, 
         error: '', 
-        success: 'Cadastro realizado com sucesso! Em breve entraremos em contato.' 
+        success: 'Cliente cadastrado com sucesso! Faça seu login.' 
       });
       
       setFormData({
-        nomeCompleto: '',
-        idade: '',
-        nomeResponsavel: '',
-        telefone: '',
+        nome: '',
         email: '',
-        lojaIndicacao: '',
-        fotoUrl: ''
+        senha: ''
       });
     } catch (err) {
       console.error('Erro no cadastro:', err);
       setStatus({ 
         loading: false, 
-        error: 'Erro ao enviar cadastro. Verifique os dados ou tente novamente mais tarde.', 
+        error: 'Erro ao cadastrar cliente. Verifique os dados ou tente novamente.', 
         success: '' 
       });
     }
   };
 
   return (
-    <section id="inscricao" className="py-20 px-4 bg-gradient-to-b from-slate-950 to-slate-900">
-      <div className="max-w-2xl mx-auto bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden">
-        <div className="bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600 p-8 text-center text-white">
-          <h2 className="text-3xl font-black">FAÇA PARTE DESSA HISTÓRIA</h2>
-          <p className="text-sm text-pink-100 mt-1">E descubra novos talentos! Preencha o cadastro abaixo:</p>
+    <section id="cadastro-cliente" className="py-20 px-4 bg-neutral-950 text-neutral-100">
+      <div className="max-w-md mx-auto bg-neutral-900 border border-neutral-800 rounded-2xl shadow-2xl overflow-hidden">
+        <div className="bg-gradient-to-r from-rose-600 to-rose-800 p-6 text-center text-white">
+          <h2 className="text-2xl font-serif font-bold">CRIAR SUA CONTA</h2>
+          <p className="text-xs text-rose-100 mt-1">Cadastre-se para realizar seus pedidos na Vitrine Delas ♥</p>
         </div>
 
+<<<<<<< HEAD
         <form onSubmit={handleSubmit} className="p-8 space-y-5">
           {status.success && (
             <div className="p-4 bg-emerald-950 border border-emerald-500 text-emerald-300 rounded-xl text-center font-semibold">
@@ -70,15 +72,21 @@ export default function InscricaoForm() {
               {status.error}
             </div>
           )}
+=======
+        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          {status.success && <div className="p-3 bg-green-950 border border-green-700 text-green-300 rounded text-xs text-center font-medium">{status.success}</div>}
+          {status.error && <div className="p-3 bg-red-950 border border-red-700 text-red-300 rounded text-xs text-center font-medium">{status.error}</div>}
+>>>>>>> 2b1a1db (feat: atualiza front-end integrado com backend do LojaBrás no Render)
 
           <div>
-            <label className="block text-sm font-semibold mb-1 text-slate-300">Nome Completo do Modelo *</label>
+            <label className="block text-xs font-medium text-neutral-300 uppercase tracking-wider mb-1">Nome Completo *</label>
             <input 
               type="text" 
-              name="nomeCompleto" 
-              value={formData.nomeCompleto} 
+              name="nome" 
+              value={formData.nome} 
               onChange={handleChange} 
               required 
+<<<<<<< HEAD
               className="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl focus:ring-2 focus:ring-pink-500 outline-none text-white placeholder-slate-600" 
               placeholder="Ex: Lucas Silva" 
             />
@@ -147,27 +155,45 @@ export default function InscricaoForm() {
               onChange={handleChange} 
               className="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl focus:ring-2 focus:ring-pink-500 outline-none text-white placeholder-slate-600" 
               placeholder="Ex: Loja Parceira" 
+=======
+              className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded text-white text-sm focus:outline-none focus:border-rose-500" 
+              placeholder="Ex: Maria Souza" 
+>>>>>>> 2b1a1db (feat: atualiza front-end integrado com backend do LojaBrás no Render)
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold mb-1 text-slate-300">URL da Foto do Modelo</label>
+            <label className="block text-xs font-medium text-neutral-300 uppercase tracking-wider mb-1">E-mail *</label>
             <input 
-              type="url" 
-              name="fotoUrl" 
-              value={formData.fotoUrl} 
+              type="email" 
+              name="email" 
+              value={formData.email} 
               onChange={handleChange} 
-              className="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl focus:ring-2 focus:ring-pink-500 outline-none text-white placeholder-slate-600" 
-              placeholder="https://exemplo.com/sua-foto.jpg" 
+              required 
+              className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded text-white text-sm focus:outline-none focus:border-rose-500" 
+              placeholder="seu@email.com" 
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium text-neutral-300 uppercase tracking-wider mb-1">Senha *</label>
+            <input 
+              type="password" 
+              name="senha" 
+              value={formData.senha} 
+              onChange={handleChange} 
+              required 
+              className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded text-white text-sm focus:outline-none focus:border-rose-500" 
+              placeholder="••••••••" 
             />
           </div>
 
           <button 
             type="submit" 
             disabled={status.loading} 
-            className="w-full py-4 bg-gradient-to-r from-pink-600 to-purple-600 text-white font-extrabold rounded-xl shadow-lg hover:opacity-95 transition mt-6 cursor-pointer tracking-wide uppercase"
+            className="w-full py-3 bg-rose-600 hover:bg-rose-700 text-white font-medium rounded text-sm transition cursor-pointer mt-4"
           >
-            {status.loading ? 'Enviando Cadastro...' : 'GARANTIR MEU CADASTRO'}
+            {status.loading ? 'Cadastrando...' : 'Cadastrar Conta'}
           </button>
         </form>
       </div>

@@ -2,9 +2,12 @@
 	"folders": [
 		{
 			"path": ".."
+<<<<<<< HEAD
 		},
 		{
 			"path": "../../../Spring-Boot-React-main/Spring-Boot-React-main/React/produtos"
+=======
+>>>>>>> 2b1a1db (feat: atualiza front-end integrado com backend do LojaBrás no Render)
 		}
 	]
 }
