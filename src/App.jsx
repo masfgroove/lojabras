@@ -33,18 +33,6 @@ export default function App() {
     { id: 10, name: 'Promoções' }
   ];
 
-  // Produtos Padrão para enriquecer a vitrine
-  const produtosPadrao = [
-    { id: 101, titulo: 'Calça Wide Leg Jeans Cós Alto Empina Bumbum', preco: 129.90, freteGratis: true, badge: 'OFERTA DO DIA', rating: 4.9, vendas: 120, imageUrl: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&q=80&w=600', categoria: { id: 1, nome: 'Jeans' } },
-    { id: 102, titulo: 'Calça Mom Jeans Vintage Cintura Alta', preco: 119.90, freteGratis: true, badge: 'MAIS VENDIDO', rating: 4.8, vendas: 85, imageUrl: 'https://images.unsplash.com/photo-1582552938357-32b906df40cb?auto=format&fit=crop&q=80&w=600', categoria: { id: 1, nome: 'Jeans' } },
-    { id: 103, titulo: 'Jaqueta Jeans Oversized Estonada', preco: 189.90, freteGratis: true, badge: 'LANÇAMENTO', rating: 5.0, vendas: 40, imageUrl: 'https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&q=80&w=600', categoria: { id: 1, nome: 'Jeans' } },
-    { id: 104, titulo: 'Short Jeans Barra Desfiada', preco: 79.90, freteGratis: false, badge: 'TENDÊNCIA', rating: 4.7, vendas: 210, imageUrl: 'https://images.unsplash.com/photo-1591195853828-11db59a44f6b?auto=format&fit=crop&q=80&w=600', categoria: { id: 1, nome: 'Jeans' } },
-    { id: 105, titulo: 'Vestido Midi Floral Verão Leve', preco: 99.90, freteGratis: true, badge: 'OFERTA IMPERDÍVEL', rating: 4.9, vendas: 65, imageUrl: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&q=80&w=600', categoria: { id: 2, nome: 'Verão' } },
-    { id: 106, titulo: 'Cropped Feminino Canelado Gola Alta', preco: 49.90, freteGratis: false, badge: 'PROMOÇÃO', rating: 4.6, vendas: 310, imageUrl: 'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&q=80&w=600', categoria: { id: 4, nome: 'Casual' } },
-    { id: 107, titulo: 'Blazer Alfaiataria Acinturado Premium', preco: 199.90, freteGratis: true, badge: 'DESTAQUE', rating: 4.9, vendas: 92, imageUrl: 'https://images.unsplash.com/photo-1591369822096-ffd140ec948f?auto=format&fit=crop&q=80&w=600', categoria: { id: 5, nome: 'Trabalho' } },
-    { id: 108, titulo: 'Vestido Curto Festas Brilho Satin', preco: 159.90, freteGratis: true, badge: 'MAIS VENDIDO', rating: 4.8, vendas: 140, imageUrl: 'https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&q=80&w=600', categoria: { id: 3, nome: 'Noite' } }
-  ];
-
   // Formulário Admin alinhado com o backend LojaBrás (`/produtos`)
   const [novoProduto, setNovoProduto] = useState({
     titulo: '',
@@ -67,14 +55,11 @@ export default function App() {
       const response = await api.get('/produtos');
       const dadosBanco = Array.isArray(response.data) ? response.data : (response.data.produtos || []);
       
-      if (dadosBanco.length > 0) {
-        setProdutos([...dadosBanco, ...produtosPadrao]);
-      } else {
-        setProdutos(produtosPadrao);
-      }
+      // Carrega exclusivamente os dados vindos do Banco de Dados (sem produtos de exemplo)
+      setProdutos(dadosBanco);
     } catch (error) {
-      console.warn('Erro ao conectar na API, usando lista padrão:', error);
-      setProdutos(produtosPadrao);
+      console.error('Erro ao buscar produtos do backend:', error);
+      setProdutos([]);
     } finally {
       setLoading(false);
     }
@@ -104,6 +89,7 @@ export default function App() {
         descricao: novoProduto.descricao || novoProduto.titulo,
         preco: parseFloat(novoProduto.preco),
         quantidadeEstoque: parseInt(novoProduto.quantidadeEstoque || 10),
+        imageUrl: novoProduto.imageUrl || 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&q=80&w=600',
         categoria: novoProduto.categoria
       };
 
@@ -312,12 +298,12 @@ export default function App() {
               <div className="text-center py-20 text-neutral-400">Carregando catálogo...</div>
             ) : produtosProcessados.length === 0 ? (
               <div className="text-center py-16 bg-neutral-900/30 rounded-xl border border-neutral-800 p-8 space-y-3">
-                <p className="text-neutral-300 font-medium">Nenhum produto encontrado nesta categoria.</p>
+                <p className="text-neutral-300 font-medium">Nenhum produto cadastrado no banco de dados.</p>
                 <button 
-                  onClick={() => { setCategoriaSelecionada('Todos'); setBusca(''); }}
+                  onClick={() => setMostrarModalAdmin(true)}
                   className="text-xs bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded transition"
                 >
-                  Ver Todos os Produtos
+                  Cadastrar Primeiro Produto
                 </button>
               </div>
             ) : (
@@ -340,7 +326,7 @@ export default function App() {
                           className="w-full h-full object-cover object-center group-hover:scale-105 transition duration-500"
                         />
                         <span className="absolute top-3 left-3 bg-blue-600 text-white text-[10px] font-bold uppercase px-2 py-0.5 rounded shadow">
-                          {p.badge || 'OFERTA'}
+                          {p.badge || 'NOVIDADE'}
                         </span>
                       </div>
 
@@ -450,6 +436,18 @@ export default function App() {
                     ))}
                   </select>
                 </div>
+              </div>
+
+              <div>
+                <label className="block text-xs text-neutral-300 uppercase mb-1">URL da Imagem</label>
+                <input 
+                  type="text" 
+                  name="imageUrl" 
+                  value={novoProduto.imageUrl} 
+                  onChange={handleInputChange} 
+                  placeholder="https://exemplo.com/foto.jpg"
+                  className="w-full bg-neutral-950 border border-neutral-800 rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-rose-500"
+                />
               </div>
 
               <button 
