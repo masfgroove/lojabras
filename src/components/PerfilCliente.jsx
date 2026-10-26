@@ -81,6 +81,7 @@ export default function PerfilCliente({ onClose }) {
     navigate('/');
   };
 
+  
   const fecharPerfil = () => {
     if (onClose) {
       onClose();
