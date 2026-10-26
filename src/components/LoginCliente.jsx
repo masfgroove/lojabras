@@ -27,7 +27,7 @@ export default function LoginCliente() {
         setStatus({ loading: false, error: '', success: 'Login efetuado com sucesso! Redirecionando...' });
         
         setTimeout(() => {
-          navigate('/dashboard');
+          navigate('/');
         }, 1200);
       }
     } catch (error) {

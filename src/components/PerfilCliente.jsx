@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
-import { User, MapPin, Phone, FileText, Mail, Lock, CheckCircle, AlertCircle, X } from 'lucide-react';
+import { User, MapPin, Phone, FileText, Mail, CheckCircle, AlertCircle, X, LogOut } from 'lucide-react';
 
-export default function PerfilCliente({ clienteId, onClose }) {
+export default function PerfilCliente({ onClose }) {
+  const navigate = useNavigate();
+  // Pega o ID do cliente logado no localStorage
+  const clienteId = localStorage.getItem('clienteLogadoId');
+
   const [cliente, setCliente] = useState({
     nome: '',
     email: '',
@@ -20,6 +25,9 @@ export default function PerfilCliente({ clienteId, onClose }) {
   useEffect(() => {
     if (clienteId) {
       carregarPerfil();
+    } else {
+      // Se não estiver logado, redireciona para o login
+      navigate('/login');
     }
   }, [clienteId]);
 
@@ -49,6 +57,12 @@ export default function PerfilCliente({ clienteId, onClose }) {
 
     try {
       await api.put(`/clientes/${clienteId}`, cliente);
+      
+      // Atualiza o nome armazenado no localStorage caso o usuário tenha alterado
+      if (cliente.nome) {
+        localStorage.setItem('clienteLogadoNome', cliente.nomePreferencia || cliente.nome);
+      }
+
       setStatus({ 
         loading: false, 
         error: '', 
@@ -61,20 +75,44 @@ export default function PerfilCliente({ clienteId, onClose }) {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('clienteLogadoId');
+    localStorage.removeItem('clienteLogadoNome');
+    navigate('/');
+  };
+
+  const fecharPerfil = () => {
+    if (onClose) {
+      onClose();
+    } else {
+      navigate('/');
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
       <div className="bg-neutral-900 border border-rose-500/30 rounded-2xl max-w-2xl w-full p-6 relative text-neutral-100 shadow-2xl my-8">
         
-        {/* Botão Fechar */}
-        <button 
-          onClick={onClose} 
-          className="absolute top-4 right-4 text-neutral-400 hover:text-white cursor-pointer p-1 rounded-full bg-neutral-800"
-        >
-          <X className="w-5 h-5" />
-        </button>
+        {/* Botões do Topo (Fechar e Sair) */}
+        <div className="absolute top-4 right-4 flex items-center gap-2">
+          <button 
+            onClick={handleLogout}
+            title="Sair da conta"
+            className="flex items-center gap-1 px-3 py-1.5 text-xs bg-red-950/60 hover:bg-red-900 text-red-300 border border-red-800 rounded-lg transition cursor-pointer"
+          >
+            <LogOut className="w-3.5 h-3.5" /> Sair
+          </button>
+          
+          <button 
+            onClick={fecharPerfil} 
+            className="text-neutral-400 hover:text-white cursor-pointer p-1.5 rounded-full bg-neutral-800"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
 
         {/* Cabeçalho */}
-        <div className="mb-6 pb-4 border-b border-neutral-800">
+        <div className="mb-6 pb-4 border-b border-neutral-800 pr-24">
           <h2 className="text-2xl font-serif font-bold text-rose-300 flex items-center gap-2">
             <User className="w-6 h-6 text-rose-400" /> Informações do seu Perfil
           </h2>
@@ -207,7 +245,7 @@ export default function PerfilCliente({ clienteId, onClose }) {
             </div>
           </div>
 
-          {/* Dados da Conta (E-mail fixo ou alterável) */}
+          {/* Dados da Conta */}
           <div className="bg-neutral-950/50 p-4 rounded-xl border border-neutral-800 space-y-3">
             <h3 className="text-xs font-bold text-rose-300 uppercase tracking-wider flex items-center gap-1.5">
               <Mail className="w-4 h-4 text-rose-400" /> Dados da Conta
@@ -215,7 +253,7 @@ export default function PerfilCliente({ clienteId, onClose }) {
             <div>
               <label className="block text-[11px] text-neutral-400 uppercase mb-1">E-mail de Acesso</label>
               <input 
-                type="emailf" 
+                type="email" 
                 name="email"
                 value={cliente.email || ''}
                 disabled

@@ -225,20 +225,23 @@ export default function App() {
           </div>
 
           <div className="hidden md:flex items-center gap-3 shrink-0">
-            <Link 
-              to="/login"
-              className="px-3.5 py-2 bg-neutral-900 hover:bg-neutral-800 text-rose-300 rounded-lg transition border border-rose-500/30 text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
-            >
-              <User className="w-4 h-4" />
-              <span>Entrar</span>
-            </Link>
-
-            <Link 
-              to="/dashboard"
-              className="px-3.5 py-2 bg-neutral-900 hover:bg-neutral-800 text-neutral-200 rounded-lg transition border border-neutral-800 text-xs font-medium flex items-center gap-1.5 cursor-pointer"
-            >
-              <span>Dashboard</span>
-            </Link>
+            {localStorage.getItem('clienteLogadoId') ? (
+              <Link 
+                to="/dashboard"
+                className="px-3.5 py-2 bg-neutral-900 hover:bg-neutral-800 text-rose-300 rounded-lg transition border border-rose-500/30 text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
+              >
+                <User className="w-4 h-4" />
+                <span>Olá, {localStorage.getItem('clienteLogadoNome') || 'Cliente'}</span>
+              </Link>
+            ) : (
+              <Link 
+                to="/login"
+                className="px-3.5 py-2 bg-neutral-900 hover:bg-neutral-800 text-rose-300 rounded-lg transition border border-rose-500/30 text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
+              >
+                <User className="w-4 h-4" />
+                <span>Entrar</span>
+              </Link>
+            )}
 
             <button 
               onClick={() => setMostrarModalAdmin(true)}
