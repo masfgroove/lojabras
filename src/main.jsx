@@ -5,6 +5,7 @@ import './index.css'
 import App from './App.jsx'
 import PerfilCliente from './components/PerfilCliente.jsx'
 import LoginCliente from './components/LoginCliente.jsx'
+import RegistroCliente from './components/RegistroCliente.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -13,6 +14,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/" element={<App />} />
         <Route path="/dashboard" element={<PerfilCliente />} />
         <Route path="/login" element={<LoginCliente />} />
+        <Route path="/registro" element={<RegistroCliente />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,

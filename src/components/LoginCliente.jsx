@@ -21,7 +21,6 @@ export default function LoginCliente() {
       const response = await api.post('/clientes/login', credenciais);
       
       if (response.data && response.data.id) {
-        // Guarda o ID e dados básicos do cliente no localStorage para usar no Dashboard
         localStorage.setItem('clienteLogadoId', response.data.id);
         localStorage.setItem('clienteLogadoNome', response.data.nome);
 
