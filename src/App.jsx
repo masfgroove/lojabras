@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import api from './services/api';
 import { 
   ShoppingBag, ShieldCheck, Truck, CreditCard, MessageCircle, 
-  PlusCircle, X, Search, SlidersHorizontal, Star, Heart 
+  PlusCircle, X, Search, SlidersHorizontal, Star, Heart, User 
 } from 'lucide-react';
 
 export default function App() {
@@ -185,17 +186,26 @@ export default function App() {
               <span className="text-2xl">✨</span> VITRINE DELAS
             </a>
 
-            <button 
-              onClick={() => setMostrarCarrinho(true)}
-              className="md:hidden p-2 bg-neutral-900 border border-neutral-800 rounded-lg text-rose-400 relative"
-            >
-              <ShoppingBag className="w-5 h-5" />
-              {carrinho.length > 0 && (
-                <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-                  {carrinho.length}
-                </span>
-              )}
-            </button>
+            <div className="flex items-center gap-2 md:hidden">
+              <Link 
+                to="/dashboard"
+                className="p-2 bg-neutral-900 border border-neutral-800 rounded-lg text-rose-400"
+                title="Dashboard do Cliente"
+              >
+                <User className="w-5 h-5" />
+              </Link>
+              <button 
+                onClick={() => setMostrarCarrinho(true)}
+                className="p-2 bg-neutral-900 border border-neutral-800 rounded-lg text-rose-400 relative"
+              >
+                <ShoppingBag className="w-5 h-5" />
+                {carrinho.length > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                    {carrinho.length}
+                  </span>
+                )}
+              </button>
+            </div>
           </div>
 
           <div className="w-full md:max-w-2xl relative">
@@ -215,6 +225,14 @@ export default function App() {
           </div>
 
           <div className="hidden md:flex items-center gap-3 shrink-0">
+            <Link 
+              to="/dashboard"
+              className="px-3.5 py-2 bg-neutral-900 hover:bg-neutral-800 text-neutral-200 rounded-lg transition border border-neutral-800 text-xs font-medium flex items-center gap-1.5 cursor-pointer"
+            >
+              <User className="w-4 h-4 text-rose-400" />
+              <span>Dashboard</span>
+            </Link>
+
             <button 
               onClick={() => setMostrarModalAdmin(true)}
               className="bg-rose-600 hover:bg-rose-700 text-white px-3.5 py-2 rounded-lg text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 transition cursor-pointer border border-rose-400/30"
