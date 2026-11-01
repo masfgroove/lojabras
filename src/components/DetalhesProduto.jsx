@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import api from '../services/api';
 import { 
-  ShoppingBag, ShieldCheck, Truck, ArrowLeft, Star, Heart, 
-  Check, Share2, MapPin, RefreshCw, User 
+  ShoppingBag, ShieldCheck, Truck, ArrowLeft, Star, 
+  Check, RefreshCw 
 } from 'lucide-react';
 
 export default function DetalhesProduto() {
@@ -12,8 +12,6 @@ export default function DetalhesProduto() {
 
   const [produto, setProduto] = useState(null);
   const [loading, setLoading] = useState(true);
-  
-  // Estados para as seleções do cliente (estilo Mercado Livre)
   const [tamanhoSelecionado, setTamanhoSelecionado] = useState('');
   const [corSelecionada, setCorSelecionada] = useState('');
   const [quantidade, setQuantidade] = useState(1);
@@ -21,26 +19,31 @@ export default function DetalhesProduto() {
   const [adicionadoComSucesso, setAdicionadoComSucesso] = useState(false);
 
   useEffect(() => {
-    carregarDetalhesProduto();
+    if (id) {
+      carregarDetalhesProduto();
+    }
   }, [id]);
 
   const carregarDetalhesProduto = async () => {
     try {
       setLoading(true);
       const response = await api.get(`/produtos/${id}`);
-      if (response.data) {
+      if (response && response.data) {
         setProduto(response.data);
-        setImagemPrincipal(response.data.urlImg || response.data.imageUrl);
+        setImagemPrincipal(response.data.urlImg || response.data.imageUrl || 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&q=80&w=600');
         
-        // Se houver cores disponíveis, define a primeira por padrão
         if (response.data.coresDisponiveis) {
           const cores = response.data.coresDisponiveis.split(',');
           if (cores.length > 0) setCorSelecionada(cores[0].trim());
+        } else {
+          setCorSelecionada('Padrão');
         }
-        // Se houver tamanhos disponíveis, define o primeiro por padrão
+
         if (response.data.tamanhosDisponiveis) {
           const tamanhos = response.data.tamanhosDisponiveis.split(',');
           if (tamanhos.length > 0) setTamanhoSelecionado(tamanhos[0].trim());
+        } else {
+          setTamanhoSelecionado('Único');
         }
       }
     } catch (error) {
@@ -53,7 +56,6 @@ export default function DetalhesProduto() {
   const handleAdicionarAoCarrinho = () => {
     if (!produto) return;
 
-    // Recupera sacola atual do localStorage ou cria nova
     const carrinhoAtual = JSON.parse(localStorage.getItem('carrinho_vitrine')) || [];
     
     const itemCarrinho = {
@@ -82,21 +84,20 @@ export default function DetalhesProduto() {
     return (
       <div className="min-h-screen bg-neutral-950 text-neutral-100 flex flex-col items-center justify-center gap-4">
         <p className="text-neutral-400">Produto não encontrado.</p>
-        <button onClick={() => navigate('/')} className="bg-rose-600 text-white px-4 py-2 rounded-lg text-xs font-semibold">
+        <button onClick={() => navigate('/')} className="bg-rose-600 text-white px-4 py-2 rounded-lg text-xs font-semibold cursor-pointer">
           Voltar para a Vitrine
         </button>
       </div>
     );
   }
 
-  // Converte strings de tamanhos e cores em arrays, se existirem
   const listaTamanhos = produto.tamanhosDisponiveis ? produto.tamanhosDisponiveis.split(',').map(t => t.trim()) : ['P', 'M', 'G', 'GG'];
   const listaCores = produto.coresDisponiveis ? produto.coresDisponiveis.split(',').map(c => c.trim()) : ['Azul Jeans', 'Preto'];
 
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100 font-sans pb-16">
       
-      {/* HEADER SIMPLES DE VOLTA */}
+      {/* HEADER */}
       <header className="bg-black/95 border-b border-neutral-800 px-4 lg:px-8 py-3 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <button 
@@ -110,34 +111,25 @@ export default function DetalhesProduto() {
             ✨ VITRINE DELAS
           </Link>
 
-          <div className="w-20"></div> {/* Espaçador */}
+          <div className="w-20"></div>
         </div>
       </header>
 
-      {/* CONTEÚDO PRINCIPAL ESTILO MERCADO LIVRE */}
+      {/* CONTEÚDO */}
       <main className="max-w-7xl mx-auto px-4 lg:px-8 py-8">
         <div className="bg-neutral-900 border border-neutral-800 rounded-2xl shadow-2xl grid grid-cols-1 lg:grid-cols-12 gap-8 p-6 lg:p-8">
           
-          {/* COLUNA ESQUERDA: FOTOS (Miniaturas + Principal) */}
+          {/* FOTOS */}
           <div className="lg:col-span-7 flex flex-col md:flex-row gap-4">
-            {/* Miniaturas verticais */}
             <div className="flex md:flex-col gap-2 overflow-x-auto">
               <button 
                 onClick={() => setImagemPrincipal(produto.urlImg || produto.imageUrl)}
-                className={`w-16 h-16 rounded-lg border-2 overflow-hidden bg-neutral-950 shrink-0 ${imagemPrincipal === (produto.urlImg || produto.imageUrl) ? 'border-rose-500' : 'border-neutral-800'}`}
+                className={`w-16 h-16 rounded-lg border-2 overflow-hidden bg-neutral-950 shrink-0 cursor-pointer ${imagemPrincipal === (produto.urlImg || produto.imageUrl) ? 'border-rose-500' : 'border-neutral-800'}`}
               >
                 <img src={produto.urlImg || produto.imageUrl} alt="" className="w-full h-full object-cover" />
               </button>
-              {/* Exemplo de miniatura extra se houver */}
-              <button 
-                onClick={() => setImagemPrincipal('https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&q=80&w=600')}
-                className="w-16 h-16 rounded-lg border-2 border-neutral-800 overflow-hidden bg-neutral-950 shrink-0 hover:border-rose-500"
-              >
-                <img src="https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&q=80&w=600" alt="" className="w-full h-full object-cover" />
-              </button>
             </div>
 
-            {/* Imagem Principal Grande */}
             <div className="flex-1 bg-neutral-950 rounded-xl overflow-hidden border border-neutral-800 relative h-[450px] flex items-center justify-center">
               <span className="absolute top-4 left-4 bg-blue-600 text-white text-[11px] font-bold uppercase px-2.5 py-1 rounded shadow">
                 {produto.badge || 'NOVIDADE'}
@@ -150,7 +142,7 @@ export default function DetalhesProduto() {
             </div>
           </div>
 
-          {/* COLUNA DIREITA: INFORMAÇÕES, PREÇO E COMPRA */}
+          {/* DETALHES E COMPRA */}
           <div className="lg:col-span-5 space-y-6">
             
             <div className="space-y-2">
@@ -159,7 +151,6 @@ export default function DetalhesProduto() {
                 {produto.titulo}
               </h1>
 
-              {/* Avaliação estrelas */}
               <div className="flex items-center gap-1 text-amber-400 text-xs">
                 <Star className="w-4 h-4 fill-current" />
                 <Star className="w-4 h-4 fill-current" />
@@ -170,7 +161,6 @@ export default function DetalhesProduto() {
               </div>
             </div>
 
-            {/* Preço */}
             <div className="space-y-1">
               <div className="text-3xl lg:text-4xl font-bold text-rose-300">
                 R$ {parseFloat(produto.preco || 0).toFixed(2)}
@@ -178,7 +168,7 @@ export default function DetalhesProduto() {
               <p className="text-xs text-neutral-400">em até 10x sem juros no cartão</p>
             </div>
 
-            {/* Seleção de Cor */}
+            {/* Cor */}
             <div className="space-y-2 pt-2 border-t border-neutral-800">
               <span className="text-xs font-semibold text-neutral-300 uppercase">
                 Cor: <strong className="text-white">{corSelecionada}</strong>
@@ -200,14 +190,11 @@ export default function DetalhesProduto() {
               </div>
             </div>
 
-            {/* Seleção de Tamanho */}
+            {/* Tamanho */}
             <div className="space-y-2 pt-2">
-              <div className="flex justify-between items-center">
-                <span className="text-xs font-semibold text-neutral-300 uppercase">
-                  Tamanho: <strong className="text-white">{tamanhoSelecionado}</strong>
-                </span>
-                <span className="text-[11px] text-rose-400 cursor-pointer hover:underline">Guia de tamanhos</span>
-              </div>
+              <span className="text-xs font-semibold text-neutral-300 uppercase">
+                Tamanho: <strong className="text-white">{tamanhoSelecionado}</strong>
+              </span>
               <div className="flex flex-wrap gap-2">
                 {listaTamanhos.map((tam, i) => (
                   <button
@@ -225,7 +212,6 @@ export default function DetalhesProduto() {
               </div>
             </div>
 
-            {/* Estoque e Envio */}
             <div className="space-y-2 pt-2 text-xs text-neutral-300 bg-neutral-950 p-3.5 rounded-xl border border-neutral-800">
               <div className="flex items-center gap-2 text-green-400 font-bold">
                 <Truck className="w-4 h-4" /> Frete Grátis <span className="bg-green-500/20 px-1.5 py-0.5 rounded text-[10px]">FULL</span>
@@ -233,14 +219,12 @@ export default function DetalhesProduto() {
               <p className="text-neutral-400">Estoque disponível: <strong className="text-white">{produto.quantidadeEstoque || 10} unidades</strong></p>
             </div>
 
-            {/* Feedback de Adicionado */}
             {adicionadoComSucesso && (
               <div className="p-3 bg-green-950 border border-green-700 text-green-300 rounded-lg text-xs flex items-center gap-2">
                 <Check className="w-4 h-4" /> Produto adicionado com sucesso à sacola!
               </div>
             )}
 
-            {/* Botões de Ação */}
             <div className="space-y-3 pt-4 border-t border-neutral-800">
               <button 
                 onClick={handleAdicionarAoCarrinho}
@@ -250,7 +234,6 @@ export default function DetalhesProduto() {
               </button>
             </div>
 
-            {/* Garantias */}
             <div className="pt-2 space-y-2 text-xs text-neutral-400">
               <div className="flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-rose-400 shrink-0" />
@@ -266,11 +249,11 @@ export default function DetalhesProduto() {
 
         </div>
 
-        {/* DESCRIÇÃO DETALHADA DO PRODUTO */}
+        {/* DESCRIÇÃO */}
         <div className="mt-8 bg-neutral-900 border border-neutral-800 rounded-2xl p-6 lg:p-8 space-y-4">
           <h3 className="text-lg font-serif font-bold text-rose-200">Descrição do Produto</h3>
           <p className="text-sm text-neutral-300 leading-relaxed whitespace-pre-line">
-            {produto.descricao || 'Produto de altíssima qualidade, fabricado com tecidos premium selecionados para garantir conforto, durabilidade e elegância em qualquer ocasião. Perfeito para compor looks modernos e sofisticados.'}
+            {produto.descricao || 'Produto de altíssima qualidade, fabricado com tecidos premium selecionados para garantir conforto e elegância.'}
           </p>
         </div>
       </main>
