@@ -41,6 +41,9 @@ export default function App() {
     preco: '',
     quantidadeEstoque: 10,
     imageUrl: '',
+    tamanhosDisponiveis: 'P, M, G, GG',
+    coresDisponiveis: 'Azul, Preto, Branco',
+    badge: 'NOVIDADE',
     categoria: { id: 1 }
   });
   const [enviando, setEnviando] = useState(false);
@@ -48,6 +51,9 @@ export default function App() {
 
   useEffect(() => {
     carregarProdutos();
+    // Carrega carrinho salvo se houver
+    const carrinhoSalvo = JSON.parse(localStorage.getItem('carrinho_vitrine'));
+    if (carrinhoSalvo) setCarrinho(carrinhoSalvo);
   }, []);
 
   const carregarProdutos = async () => {
@@ -98,6 +104,9 @@ export default function App() {
         preco: parseFloat(novoProduto.preco),
         quantidadeEstoque: parseInt(novoProduto.quantidadeEstoque || 10),
         urlImg: novoProduto.imageUrl || 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&q=80&w=600',
+        tamanhosDisponiveis: novoProduto.tamanhosDisponiveis,
+        coresDisponiveis: novoProduto.coresDisponiveis,
+        badge: novoProduto.badge,
         categoria: novoProduto.categoria
       };
 
@@ -108,7 +117,7 @@ export default function App() {
         texto: 'Produto cadastrado com sucesso no banco de dados!'
       });
 
-      setNovoProduto({ titulo: '', descricao: '', preco: '', quantidadeEstoque: 10, imageUrl: '', categoria: { id: 1 } });
+      setNovoProduto({ titulo: '', descricao: '', preco: '', quantidadeEstoque: 10, imageUrl: '', tamanhosDisponiveis: 'P, M, G, GG', coresDisponiveis: 'Azul, Preto, Branco', badge: 'NOVIDADE', categoria: { id: 1 } });
       carregarProdutos();
       
       setTimeout(() => {
@@ -128,8 +137,11 @@ export default function App() {
     }
   };
 
-  const adicionarAoCarrinho = (prod) => {
-    setCarrinho([...carrinho, prod]);
+  const adicionarAoCarrinho = (prod, e) => {
+    if (e) e.stopPropagation(); // Evita abrir os detalhes ao clicar no botão direto
+    const novoCarrinho = [...carrinho, prod];
+    setCarrinho(novoCarrinho);
+    localStorage.setItem('carrinho_vitrine', JSON.stringify(novoCarrinho));
     setMostrarCarrinho(true);
   };
 
@@ -187,13 +199,23 @@ export default function App() {
             </a>
 
             <div className="flex items-center gap-2 md:hidden">
-              <Link 
-                to="/login"
-                className="p-2 bg-neutral-900 border border-neutral-800 rounded-lg text-rose-400"
-                title="Entrar"
-              >
-                <User className="w-5 h-5" />
-              </Link>
+              {localStorage.getItem('clienteLogadoId') ? (
+                <Link 
+                  to="/dashboard"
+                  className="p-2 bg-neutral-900 border border-neutral-800 rounded-lg text-rose-400"
+                  title="Dashboard do Cliente"
+                >
+                  <User className="w-5 h-5" />
+                </Link>
+              ) : (
+                <Link 
+                  to="/login"
+                  className="p-2 bg-neutral-900 border border-neutral-800 rounded-lg text-rose-400"
+                  title="Entrar"
+                >
+                  <User className="w-5 h-5" />
+                </Link>
+              )}
               <button 
                 onClick={() => setMostrarCarrinho(true)}
                 className="p-2 bg-neutral-900 border border-neutral-800 rounded-lg text-rose-400 relative"
@@ -357,9 +379,10 @@ export default function App() {
                   const prodImg = p.urlImg || p.imageUrl || p.image || 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&q=80&w=600';
 
                   return (
-                    <div 
+                    <Link 
+                      to={`/produto/${prodId}`}
                       key={prodId}
-                      className="bg-neutral-900 border border-neutral-800 rounded-xl overflow-hidden hover:border-rose-500/60 transition duration-300 flex flex-col justify-between group relative shadow-lg"
+                      className="bg-neutral-900 border border-neutral-800 rounded-xl overflow-hidden hover:border-rose-500/60 transition duration-300 flex flex-col justify-between group relative shadow-lg cursor-pointer"
                     >
                       <div className="relative h-72 bg-neutral-950 overflow-hidden">
                         <img 
@@ -390,14 +413,14 @@ export default function App() {
                           </div>
 
                           <button 
-                            onClick={() => adicionarAoCarrinho(p)}
+                            onClick={(e) => adicionarAoCarrinho(p, e)}
                             className="w-full mt-2 bg-neutral-800 hover:bg-rose-600 text-white py-2 rounded-lg text-xs font-semibold uppercase transition flex items-center justify-center gap-2 cursor-pointer"
                           >
                             <ShoppingBag className="w-4 h-4" /> Adicionar à Sacola
                           </button>
                         </div>
                       </div>
-                    </div>
+                    </Link>
                   );
                 })}
               </div>
@@ -408,8 +431,8 @@ export default function App() {
 
       {/* MODAL ADMIN */}
       {mostrarModalAdmin && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-neutral-900 border border-rose-500/30 rounded-xl max-w-lg w-full p-6 relative">
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-neutral-900 border border-rose-500/30 rounded-xl max-w-lg w-full p-6 relative my-8">
             <button onClick={() => setMostrarModalAdmin(false)} className="absolute top-4 right-4 text-neutral-400 hover:text-white cursor-pointer">
               <X className="w-6 h-6" />
             </button>
@@ -480,6 +503,31 @@ export default function App() {
                 </div>
               </div>
 
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs text-neutral-300 uppercase mb-1">Tamanhos</label>
+                  <input 
+                    type="text" 
+                    name="tamanhosDisponiveis" 
+                    value={novoProduto.tamanhosDisponiveis} 
+                    onChange={handleInputChange} 
+                    placeholder="P, M, G, GG"
+                    className="w-full bg-neutral-950 border border-neutral-800 rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-rose-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-neutral-300 uppercase mb-1">Cores</label>
+                  <input 
+                    type="text" 
+                    name="coresDisponiveis" 
+                    value={novoProduto.coresDisponiveis} 
+                    onChange={handleInputChange} 
+                    placeholder="Azul, Preto, Branco"
+                    className="w-full bg-neutral-950 border border-neutral-800 rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-rose-500"
+                  />
+                </div>
+              </div>
+
               <div>
                 <label className="block text-xs text-neutral-300 uppercase mb-1">URL da Imagem</label>
                 <input 
@@ -528,6 +576,7 @@ export default function App() {
                         <img src={item.urlImg || item.imageUrl || item.image} alt="" className="w-12 h-12 rounded object-cover" />
                         <div>
                           <p className="text-xs font-medium text-white">{item.titulo || item.name}</p>
+                          {item.tamanhoEscolhido && <span className="text-[10px] text-rose-300 block">Tam: {item.tamanhoEscolhido} | Cor: {item.corEscolhida}</span>}
                           <p className="text-xs text-rose-400 font-bold">R$ {parseFloat(item.preco || item.price).toFixed(2)}</p>
                         </div>
                       </div>
@@ -546,7 +595,7 @@ export default function App() {
                   </span>
                 </div>
                 <a 
-                  href={`https://wa.me/?text=${encodeURIComponent(`Olá! Quero finalizar o pedido:\n` + carrinho.map(c => `- ${c.titulo || c.name} (R$ ${c.preco || c.price})`).join('\n'))}`}
+                  href={`https://wa.me/?text=${encodeURIComponent(`Olá! Quero finalizar o pedido:\n` + carrinho.map(c => `- ${c.titulo || c.name} (${c.tamanhoEscolhido || 'U'}, ${c.corEscolhida || 'P'}) - R$ ${c.preco || c.price}`).join('\n'))}`}
                   target="_blank" rel="noopener noreferrer"
                   className="w-full bg-green-600 hover:bg-green-700 text-white text-center py-3 rounded-lg text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2"
                 >
