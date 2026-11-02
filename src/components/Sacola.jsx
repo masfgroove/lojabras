@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import api from '../services/api'; // <--- Ajustado aqui com o ../
+import api from '../services/api';
 import { ShoppingBag, ArrowLeft, CheckCircle2, ShieldCheck, CreditCard, QrCode } from 'lucide-react';
 
 export default function Sacola() {
@@ -41,12 +41,11 @@ export default function Sacola() {
     localStorage.setItem('carrinho_vitrine', JSON.stringify(novoCarrinho));
   };
 
-  // Função para finalizar e salvar o pedido no backend Spring Boot / Supabase
-  const handleFinalizarPedido = async () => {
+  // Função para integrar com o Mercado Pago via Spring Boot
+  const handlePagarComMercadoPago = async () => {
     try {
       setEnviando(true);
 
-      // Pega o ID do cliente logado (se não houver, assume o ID 1 por padrão para testes)
       const clienteIdLogado = localStorage.getItem('clienteLogadoId') || 1;
 
       const payload = {
@@ -67,18 +66,19 @@ export default function Sacola() {
         }))
       };
 
-      const response = await api.post('/pedidos', payload);
+      // Envia para o endpoint do Spring Boot que cria a preferência no Mercado Pago
+      const response = await api.post('/pedidos/pagar', payload);
 
-      if (response.data.status === 'sucesso' || response.status === 200) {
-        alert('Pedido e endereço gravados com sucesso no banco de dados!');
-        localStorage.removeItem('carrinho_vitrine'); // Limpa a sacola
-        navigate('/'); // Retorna ao catálogo ou para uma tela de sucesso
+      if (response.data && response.data.initPoint) {
+        // Limpa a sacola e redireciona para o ambiente de checkout do Mercado Pago
+        localStorage.removeItem('carrinho_vitrine');
+        window.location.href = response.data.initPoint;
       } else {
-        alert('Erro ao gravar pedido: ' + (response.data.mensagem || 'Erro desconhecido'));
+        alert('Erro ao gerar o link de pagamento do Mercado Pago.');
       }
     } catch (error) {
-      console.error('Erro ao enviar pedido para o backend:', error);
-      alert('Falha ao conectar com o servidor Spring Boot. Verifique se ele está ativo.');
+      console.error('Erro ao conectar com o serviço de pagamento:', error);
+      alert('Falha ao processar o pagamento. Verifique se o backend está ativo.');
     } finally {
       setEnviando(false);
     }
@@ -190,16 +190,16 @@ export default function Sacola() {
                   <button 
                     onClick={() => setEtapa('pagamento')}
                     className="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-3.5 rounded-lg text-xs uppercase tracking-wider transition mt-4 cursor-pointer shadow-lg shadow-rose-900/20">
-                    Ir para o Pagamento (Pix)
+                    Ir para o Pagamento (Mercado Pago)
                   </button>
                 </div>
               )}
 
-              {/* ETAPA 3: PAGAMENTO PIX & GRAVAÇÃO NO BANCO */}
+              {/* ETAPA 3: PAGAMENTO MERCADO PAGO */}
               {etapa === 'pagamento' && (
                 <div className="bg-neutral-900/60 p-6 rounded-xl border border-neutral-800 space-y-4 text-center">
                   <div className="flex justify-between items-center border-b border-neutral-800 pb-2 text-left">
-                    <h2 className="text-sm font-bold uppercase tracking-wider text-rose-300">3. Pagamento via Pix</h2>
+                    <h2 className="text-sm font-bold uppercase tracking-wider text-rose-300">3. Pagamento Seguro</h2>
                     <button onClick={() => setEtapa('endereco')} className="text-xs text-neutral-400 hover:text-white underline">
                       Alterar Endereço
                     </button>
@@ -209,7 +209,7 @@ export default function Sacola() {
                     <div className="flex justify-center text-rose-400">
                       <QrCode className="w-12 h-12" />
                     </div>
-                    <p className="text-xs text-neutral-300">Escaneie o código QR ou clique no botão abaixo para concluir o pedido:</p>
+                    <p className="text-xs text-neutral-300">Clique no botão abaixo para abrir o ambiente seguro do Mercado Pago (Pix, Cartão e Boleto):</p>
                     
                     <div className="p-4 bg-neutral-900 rounded border border-neutral-800">
                       <p className="text-xs text-neutral-400">Valor Total a Pagar:</p>
@@ -217,10 +217,10 @@ export default function Sacola() {
                     </div>
 
                     <button 
-                      onClick={handleFinalizarPedido} 
+                      onClick={handlePagarComMercadoPago} 
                       disabled={enviando}
-                      className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3.5 rounded-lg text-xs uppercase tracking-wider transition cursor-pointer shadow-lg shadow-green-900/30 disabled:opacity-50">
-                      {enviando ? 'Gravando Pedido no Banco...' : 'Confirmar Pagamento e Finalizar'}
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-lg text-xs uppercase tracking-wider transition cursor-pointer shadow-lg shadow-blue-900/30 disabled:opacity-50">
+                      {enviando ? 'Gerando Pagamento...' : 'Pagar com Mercado Pago'}
                     </button>
                   </div>
                 </div>
