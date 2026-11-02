@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import api from './services/api';
+import api from "../services/api";
 import { ShoppingBag, ArrowLeft, CheckCircle2, ShieldCheck, CreditCard, QrCode } from 'lucide-react';
 
 export default function Sacola() {
