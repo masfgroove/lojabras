@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from './services/api';
-
+import Footer from './components/Footer';
 
 import { 
   ShoppingBag, ShieldCheck, Truck, CreditCard, MessageCircle, 
@@ -553,6 +553,9 @@ export default function App() {
           </div>
         </div>
       )}
+
+      {/* Roda-pé com a sua assinatura e dados */}
+      <Footer />
     </div>
   );
 

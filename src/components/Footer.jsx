@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Instagram, MessageCircle, Send, ShieldCheck, Truck, Mail, Phone, Code2 } from 'lucide-react';
+import { MessageCircle, Send, ShieldCheck, Truck, Mail, Phone, Code2, Globe } from 'lucide-react';
 
 export default function Footer() {
   const handleNewsletterSubmit = (e) => {
@@ -72,7 +72,7 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* Coluna 4: Pagamento & Contato do Desenvolvedor */}
+        {/* Coluna 4: Pagamento & Redes */}
         <div>
           <h3 className="text-white text-xs font-bold uppercase tracking-wider mb-4 border-l-2 border-rose-500 pl-2">
             Formas de Pagamento
@@ -84,7 +84,7 @@ export default function Footer() {
           </div>
 
           <h3 className="text-white text-xs font-bold uppercase tracking-wider mb-3 border-l-2 border-rose-500 pl-2">
-            Desenvolvedor
+            Redes Sociais
           </h3>
           <div className="flex flex-col gap-2 text-xs">
             <a 
@@ -93,7 +93,7 @@ export default function Footer() {
               rel="noopener noreferrer" 
               className="p-2 bg-neutral-900 border border-neutral-800 rounded-lg hover:text-rose-400 hover:border-rose-500/40 transition flex items-center gap-2"
             >
-              <Instagram className="w-4 h-4 text-rose-400" /> @masfgroove
+              <Globe className="w-4 h-4 text-rose-400" /> @masfgroove (Instagram)
             </a>
           </div>
         </div>
