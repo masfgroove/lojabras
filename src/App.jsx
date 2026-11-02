@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import api from './services/api';
 import { 
   ShoppingBag, ShieldCheck, Truck, CreditCard, MessageCircle, 
@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 
 export default function App() {
+  const navigate = useNavigate(); // Hook de navegação para redirecionar para /sacola
   const [produtos, setProdutos] = useState([]);
   const [categoriaSelecionada, setCategoriaSelecionada] = useState('Todos');
   const [busca, setBusca] = useState('');
@@ -16,7 +17,6 @@ export default function App() {
 
   // Modais e Carrinho
   const [mostrarModalAdmin, setMostrarModalAdmin] = useState(false);
-  const [mostrarCarrinho, setMostrarCarrinho] = useState(false);
   const [carrinho, setCarrinho] = useState([]);
 
   // Categorias Oficiais completas alinhadas com o Banco e o menu superior
@@ -137,18 +137,20 @@ export default function App() {
     }
   };
 
+  // ADICIONAR À SACOLA E REDIRECIONAR IMEDIATAMENTE PARA /sacola
   const adicionarAoCarrinho = (prod, e) => {
-    if (e) e.stopPropagation(); // Evita abrir os detalhes ao clicar no botão direto
+    if (e) e.stopPropagation(); 
     const novoCarrinho = [...carrinho, prod];
     setCarrinho(novoCarrinho);
     localStorage.setItem('carrinho_vitrine', JSON.stringify(novoCarrinho));
-    setMostrarCarrinho(true);
+    
+    // Redireciona direto para a página de sacola
+    navigate('/sacola');
   };
 
   const produtosProcessados = produtos.filter(p => {
     if (!p) return false;
 
-    // Se "Todos" estiver selecionado, passa direto pela categoria
     let bateCategoria = categoriaSelecionada === 'Todos';
 
     if (!bateCategoria) {
@@ -164,11 +166,9 @@ export default function App() {
         catNome = p.categoria;
       }
 
-      // Encontra a categoria correspondente na lista oficial pelo nome selecionado na barra lateral
       const catAlvo = categoriasLista.find(c => c.name.toLowerCase() === categoriaSelecionada.toLowerCase());
 
       if (catAlvo) {
-        // Compara tanto pelo ID quanto pelo nome da categoria
         bateCategoria = (catId === catAlvo.id) || (catNome.toLowerCase() === catAlvo.name.toLowerCase());
       }
     }
@@ -216,7 +216,7 @@ export default function App() {
                   <User className="w-5 h-5" />
                 </Link>
               )}
-              {/* Botão Sacola Mobile redirecionando para a rota /sacola */}
+              
               <Link 
                 to="/sacola"
                 className="p-2 bg-neutral-900 border border-neutral-800 rounded-lg text-rose-400 relative"
@@ -274,7 +274,6 @@ export default function App() {
               <span>Novo Produto</span>
             </button>
 
-            {/* Botão Sacola Desktop redirecionando para a nova página /sacola */}
             <Link 
               to="/sacola"
               className="p-2.5 bg-neutral-900 hover:bg-neutral-800 text-neutral-200 rounded-lg transition border border-neutral-800 relative cursor-pointer flex items-center gap-2"
@@ -381,10 +380,9 @@ export default function App() {
                   const prodImg = p.urlImg || p.imageUrl || p.image || 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&q=80&w=600';
 
                   return (
-                    <Link 
-                      to={`/produto/${prodId}`}
+                    <div 
                       key={prodId}
-                      className="bg-neutral-900 border border-neutral-800 rounded-xl overflow-hidden hover:border-rose-500/60 transition duration-300 flex flex-col justify-between group relative shadow-lg cursor-pointer"
+                      className="bg-neutral-900 border border-neutral-800 rounded-xl overflow-hidden hover:border-rose-500/60 transition duration-300 flex flex-col justify-between group relative shadow-lg"
                     >
                       <div className="relative h-72 bg-neutral-950 overflow-hidden">
                         <img 
@@ -422,7 +420,7 @@ export default function App() {
                           </button>
                         </div>
                       </div>
-                    </Link>
+                    </div>
                   );
                 })}
               </div>
@@ -498,7 +496,7 @@ export default function App() {
                   >
                     {categoriasLista.filter(c => c.id !== 0).map(cat => (
                       <option key={cat.id} value={cat.id}>
-                        {cat.id} - {cat.name}
+                        {cat.name}
                       </option>
                     ))}
                   </select>
