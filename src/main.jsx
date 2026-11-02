@@ -1,16 +1,17 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import './index.css'
-import App from './App.jsx'
-import PerfilCliente from './components/PerfilCliente.jsx'
-import LoginCliente from './components/LoginCliente.jsx'
-import RegistroCliente from './components/RegistroCliente.jsx'
-import DetalhesProduto from './components/DetalhesProduto.jsx'
-import Sacola from './components/Sacola.jsx' // 1. Importação adicionada aqui
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import './index.css';
+import App from './App.jsx';
+import PerfilCliente from './components/PerfilCliente.jsx';
+import LoginCliente from './components/LoginCliente.jsx';
+import RegistroCliente from './components/RegistroCliente.jsx';
+import DetalhesProduto from './components/DetalhesProduto.jsx';
+import Sacola from './components/Sacola.jsx';
+import PainelAdmin from './components/PainelAdmin.jsx'; // <--- Importe o painel aqui
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
+  <React.StrictMode>
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />} />
@@ -18,8 +19,9 @@ createRoot(document.getElementById('root')).render(
         <Route path="/login" element={<LoginCliente />} />
         <Route path="/registro" element={<RegistroCliente />} />
         <Route path="/produto/:id" element={<DetalhesProduto />} />
-        <Route path="/sacola" element={<Sacola />} /> {/* 2. Rota adicionada aqui */}
+        <Route path="/sacola" element={<Sacola />} />
+        <Route path="/admin" element={<PainelAdmin />} /> {/* <--- Adicione a rota admin aqui */}
       </Routes>
     </BrowserRouter>
-  </StrictMode>,
-)
+  </React.StrictMode>
+);
