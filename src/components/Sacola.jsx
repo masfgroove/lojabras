@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import api from './services/api';
 import { ShoppingBag, ArrowLeft, CheckCircle2, ShieldCheck, CreditCard, QrCode } from 'lucide-react';
 
 export default function Sacola() {
   const navigate = useNavigate();
   const [carrinho, setCarrinho] = useState([]);
+  const [enviando, setEnviando] = useState(false);
   
   // Estado do formulário de endereço do cliente
   const [endereco, setEndereco] = useState({
@@ -37,6 +39,49 @@ export default function Sacola() {
     const novoCarrinho = carrinho.filter((_, index) => index !== indexParaRemover);
     setCarrinho(novoCarrinho);
     localStorage.setItem('carrinho_vitrine', JSON.stringify(novoCarrinho));
+  };
+
+  // Função para finalizar e salvar o pedido no backend Spring Boot / Supabase
+  const handleFinalizarPedido = async () => {
+    try {
+      setEnviando(true);
+
+      // Pega o ID do cliente logado (se não houver, assume o ID 1 por padrão para testes)
+      const clienteIdLogado = localStorage.getItem('clienteLogadoId') || 1;
+
+      const payload = {
+        clienteId: parseInt(clienteIdLogado),
+        valorTotal: total,
+        enderecoEntrega: {
+          cep: endereco.cep,
+          rua: endereco.rua,
+          numero: endereco.numero,
+          bairro: endereco.bairro,
+          cidade: endereco.cidade,
+          estado: endereco.estado
+        },
+        itensPedido: carrinho.map(item => ({
+          produtoId: item.id || 1,
+          quantidade: item.quantidade || 1,
+          preco: parseFloat(item.preco || item.price || 0)
+        }))
+      };
+
+      const response = await api.post('/pedidos', payload);
+
+      if (response.data.status === 'sucesso' || response.status === 200) {
+        alert('Pedido e endereço gravados com sucesso no banco de dados!');
+        localStorage.removeItem('carrinho_vitrine'); // Limpa a sacola
+        navigate('/'); // Retorna ao catálogo ou para uma tela de sucesso
+      } else {
+        alert('Erro ao gravar pedido: ' + (response.data.mensagem || 'Erro desconhecido'));
+      }
+    } catch (error) {
+      console.error('Erro ao enviar pedido para o backend:', error);
+      alert('Falha ao conectar com o servidor Spring Boot. Verifique se ele está ativo.');
+    } finally {
+      setEnviando(false);
+    }
   };
 
   return (
@@ -150,7 +195,7 @@ export default function Sacola() {
                 </div>
               )}
 
-              {/* ETAPA 3: PAGAMENTO PIX */}
+              {/* ETAPA 3: PAGAMENTO PIX & GRAVAÇÃO NO BANCO */}
               {etapa === 'pagamento' && (
                 <div className="bg-neutral-900/60 p-6 rounded-xl border border-neutral-800 space-y-4 text-center">
                   <div className="flex justify-between items-center border-b border-neutral-800 pb-2 text-left">
@@ -164,7 +209,7 @@ export default function Sacola() {
                     <div className="flex justify-center text-rose-400">
                       <QrCode className="w-12 h-12" />
                     </div>
-                    <p className="text-xs text-neutral-300">Escaneie o código QR ou clique no botão abaixo para gerar o pagamento:</p>
+                    <p className="text-xs text-neutral-300">Escaneie o código QR ou clique no botão abaixo para concluir o pedido:</p>
                     
                     <div className="p-4 bg-neutral-900 rounded border border-neutral-800">
                       <p className="text-xs text-neutral-400">Valor Total a Pagar:</p>
@@ -172,9 +217,10 @@ export default function Sacola() {
                     </div>
 
                     <button 
-                      onClick={() => alert('Parabéns! Pedido gerado com sucesso. (No Passo B vamos salvar no banco de dados)')} 
-                      className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3.5 rounded-lg text-xs uppercase tracking-wider transition cursor-pointer shadow-lg shadow-green-900/30">
-                      Confirmar Pagamento e Finalizar
+                      onClick={handleFinalizarPedido} 
+                      disabled={enviando}
+                      className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3.5 rounded-lg text-xs uppercase tracking-wider transition cursor-pointer shadow-lg shadow-green-900/30 disabled:opacity-50">
+                      {enviando ? 'Gravando Pedido no Banco...' : 'Confirmar Pagamento e Finalizar'}
                     </button>
                   </div>
                 </div>
