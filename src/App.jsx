@@ -216,8 +216,9 @@ export default function App() {
                   <User className="w-5 h-5" />
                 </Link>
               )}
-              <button 
-                onClick={() => setMostrarCarrinho(true)}
+              {/* Botão Sacola Mobile redirecionando para a rota /sacola */}
+              <Link 
+                to="/sacola"
                 className="p-2 bg-neutral-900 border border-neutral-800 rounded-lg text-rose-400 relative"
               >
                 <ShoppingBag className="w-5 h-5" />
@@ -226,7 +227,7 @@ export default function App() {
                     {carrinho.length}
                   </span>
                 )}
-              </button>
+              </Link>
             </div>
           </div>
 
@@ -273,8 +274,9 @@ export default function App() {
               <span>Novo Produto</span>
             </button>
 
-            <button 
-              onClick={() => setMostrarCarrinho(true)}
+            {/* Botão Sacola Desktop redirecionando para a nova página /sacola */}
+            <Link 
+              to="/sacola"
               className="p-2.5 bg-neutral-900 hover:bg-neutral-800 text-neutral-200 rounded-lg transition border border-neutral-800 relative cursor-pointer flex items-center gap-2"
             >
               <ShoppingBag className="w-5 h-5 text-rose-400" />
@@ -284,7 +286,7 @@ export default function App() {
                   {carrinho.length}
                 </span>
               )}
-            </button>
+            </Link>
           </div>
         </div>
       </header>
@@ -548,61 +550,6 @@ export default function App() {
                 {enviando ? 'Salvando...' : 'Salvar Produto'}
               </button>
             </form>
-          </div>
-        </div>
-      )}
-
-      {/* DRAWER CARRINHO */}
-      {mostrarCarrinho && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex justify-end">
-          <div className="bg-neutral-900 w-full max-w-md h-full p-6 flex flex-col justify-between border-l border-neutral-800">
-            <div>
-              <div className="flex justify-between items-center pb-4 border-b border-neutral-800 mb-4">
-                <h3 className="text-lg font-serif text-rose-200 flex items-center gap-2">
-                  <ShoppingBag className="w-5 h-5 text-rose-400" /> Sacola ({carrinho.length})
-                </h3>
-                <button onClick={() => setMostrarCarrinho(false)} className="text-neutral-400 hover:text-white cursor-pointer">
-                  <X className="w-6 h-6" />
-                </button>
-              </div>
-
-              {carrinho.length === 0 ? (
-                <p className="text-neutral-400 text-sm text-center py-12">Sua sacola está vazia.</p>
-              ) : (
-                <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-1">
-                  {carrinho.map((item, i) => (
-                    <div key={i} className="flex gap-3 bg-neutral-950 p-3 rounded-lg border border-neutral-800 items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <img src={item.urlImg || item.imageUrl || item.image} alt="" className="w-12 h-12 rounded object-cover" />
-                        <div>
-                          <p className="text-xs font-medium text-white">{item.titulo || item.name}</p>
-                          {item.tamanhoEscolhido && <span className="text-[10px] text-rose-300 block">Tam: {item.tamanhoEscolhido} | Cor: {item.corEscolhida}</span>}
-                          <p className="text-xs text-rose-400 font-bold">R$ {parseFloat(item.preco || item.price).toFixed(2)}</p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {carrinho.length > 0 && (
-              <div className="pt-4 border-t border-neutral-800 space-y-3">
-                <div className="flex justify-between text-sm font-semibold text-white">
-                  <span>Total:</span>
-                  <span className="text-rose-400">
-                    R$ {carrinho.reduce((acc, cur) => acc + parseFloat(cur.preco || cur.price || 0), 0).toFixed(2)}
-                  </span>
-                </div>
-                <a 
-                  href={`https://wa.me/?text=${encodeURIComponent(`Olá! Quero finalizar o pedido:\n` + carrinho.map(c => `- ${c.titulo || c.name} (${c.tamanhoEscolhido || 'U'}, ${c.corEscolhida || 'P'}) - R$ ${c.preco || c.price}`).join('\n'))}`}
-                  target="_blank" rel="noopener noreferrer"
-                  className="w-full bg-green-600 hover:bg-green-700 text-white text-center py-3 rounded-lg text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2"
-                >
-                  <MessageCircle className="w-4 h-4" /> Finalizar no WhatsApp
-                </a>
-              </div>
-            )}
           </div>
         </div>
       )}
