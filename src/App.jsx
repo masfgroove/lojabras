@@ -268,13 +268,7 @@ export default function App() {
               </Link>
             )}
 
-            <button 
-              onClick={() => setMostrarModalAdmin(true)}
-              className="bg-rose-600 hover:bg-rose-700 text-white px-3.5 py-2 rounded-lg text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 transition cursor-pointer border border-rose-400/30"
-            >
-              <PlusCircle className="w-4 h-4" />
-              <span>Novo Produto</span>
-            </button>
+           
 
             <Link 
               to="/sacola"
