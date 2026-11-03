@@ -71,6 +71,7 @@ export default function ChatWidget() {
     }
 
     createChat({
+      // ⚠️ Cole aqui exatamente a URL do webhook do chat que aparece no seu n8n (como na sua imagem)
       webhookUrl: 'https://n8n-n8n.yqlkvb.easypanel.host/webhook/4131243a-299b-48d6-96b0-7d2aaf0f22c3/chat',
       mode: 'window',
       showWelcomeScreen: false,
