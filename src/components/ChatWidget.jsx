@@ -71,7 +71,7 @@ export default function ChatWidget() {
     }
 
     createChat({
-      webhookUrl: 'https://n8n-n8n.yqlkvb.easypanel.host/webhook/e6c249d4-0465-4b53-99a1-2a1616819a1f/chat',
+      webhookUrl: 'https://n8n-n8n.yqlkvb.easypanel.host/webhook/4131243a-299b-48d6-96b0-7d2aaf0f22c3/chat',
       mode: 'window',
       showWelcomeScreen: false,
       loadPreviousSession: false,
