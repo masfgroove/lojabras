@@ -9,10 +9,12 @@ import RegistroCliente from './components/RegistroCliente.jsx';
 import DetalhesProduto from './components/DetalhesProduto.jsx';
 import Sacola from './components/Sacola.jsx';
 import PainelAdmin from './components/PainelAdmin.jsx'; // <--- Importe o painel aqui
+import ChatWidget from './components/ChatWidget.jsx'; // <--- Importe aqui
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
+    <ChatWidget /> {/* <--- Coloque o chat aqui para rodar em todas as rotas */}
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/dashboard" element={<PerfilCliente />} />
