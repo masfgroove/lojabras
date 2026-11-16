@@ -7,6 +7,7 @@ export default function ChatWidget() {
     // Evita duplicar o chat caso o React reinicie o efeito
     const existingChat = document.getElementById('n8n-chat');
     if (existingChat) return;
+    
 
     // Injeção dinâmica do estilo CSS personalizado para combinar com a identidade visual da Vitrine Delas
     const styleId = 'n8n-chat-custom-styles';
