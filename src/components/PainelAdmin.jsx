@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import api from '../services/api';
-import { LayoutDashboard, ShoppingBag, Package, Users, ArrowLeft, CheckCircle, Clock, PlusCircle, X } from 'lucide-react';
+import { LayoutDashboard, ShoppingBag, Package, Users, ArrowLeft, CheckCircle, Clock, PlusCircle, Trash2, Edit3, X } from 'lucide-react';
 
 export default function PainelAdmin() {
   const navigate = useNavigate();
@@ -12,7 +12,8 @@ export default function PainelAdmin() {
   const [clientes, setClientes] = useState([]);
   const [carregando, setCarregando] = useState(false);
 
-  // Estados do formulário de novo produto
+  // Estados do formulário de novo produto / edição
+  const [produtoEmEdicaoId, setProdutoEmEdicaoId] = useState(null);
   const [novoProduto, setNovoProduto] = useState({
     titulo: '',
     descricao: '',
@@ -77,7 +78,8 @@ export default function PainelAdmin() {
     }
   };
 
-  const handleCadastrarProduto = async (e) => {
+  // Salvar ou Atualizar Produto
+  const handleSalvarProduto = async (e) => {
     e.preventDefault();
     setEnviando(true);
     setMensagemStatus({ tipo: '', texto: '' });
@@ -95,28 +97,61 @@ export default function PainelAdmin() {
         categoria: novoProduto.categoria
       };
 
-      await api.post('/produtos', payload);
+      if (produtoEmEdicaoId) {
+        await api.put(`/produtos/${produtoEmEdicaoId}`, payload);
+        setMensagemStatus({ tipo: 'sucesso', texto: 'Produto atualizado com sucesso!' });
+      } else {
+        await api.post('/produtos', payload);
+        setMensagemStatus({ tipo: 'sucesso', texto: 'Produto cadastrado com sucesso no banco de dados!' });
+      }
 
-      setMensagemStatus({
-        tipo: 'sucesso',
-        texto: 'Produto cadastrado com sucesso no banco de dados!'
+      setProdutoEmEdicaoId(null);
+      setNovoProduto({ 
+        titulo: '', descricao: '', preco: '', quantidadeEstoque: 10, 
+        imageUrl: '', tamanhosDisponiveis: 'P, M, G, GG', 
+        coresDisponiveis: 'Azul, Preto, Branco', badge: 'NOVIDADE', categoria: { id: 1 } 
       });
-
-      setNovoProduto({ titulo: '', descricao: '', preco: '', quantidadeEstoque: 10, imageUrl: '', tamanhosDisponiveis: 'P, M, G, GG', coresDisponiveis: 'Azul, Preto, Branco', badge: 'NOVIDADE', categoria: { id: 1 } });
       
       if (abaAtiva === 'estoque') {
         carregarDadosAdmin();
       }
 
     } catch (error) {
-      console.error('Erro ao cadastrar produto:', error);
+      console.error('Erro ao salvar produto:', error);
       const mensagemErro = error.response?.data?.message || error.message || 'Erro ao conectar com a API';
-      setMensagemStatus({
-        tipo: 'erro',
-        texto: `Falha ao salvar: ${mensagemErro}`
-      });
+      setMensagemStatus({ tipo: 'erro', texto: `Falha ao salvar: ${mensagemErro}` });
     } finally {
       setEnviando(false);
+    }
+  };
+
+  // Preparar para Editar
+  const iniciarEdicao = (prod) => {
+    setProdutoEmEdicaoId(prod.id);
+    setNovoProduto({
+      titulo: prod.titulo || prod.name || '',
+      descricao: prod.descricao || '',
+      preco: prod.preco || prod.price || '',
+      quantidadeEstoque: prod.quantidadeEstoque || prod.estoque || 10,
+      imageUrl: prod.urlImg || prod.imageUrl || prod.image || '',
+      tamanhosDisponiveis: prod.tamanhosDisponiveis || 'P, M, G, GG',
+      coresDisponiveis: prod.coresDisponiveis || 'Azul, Preto, Branco',
+      badge: prod.badge || 'NOVIDADE',
+      categoria: prod.categoria || { id: 1 }
+    });
+    setAbaAtiva('novo-produto');
+  };
+
+  // Deletar Produto
+  const deletarProduto = async (id) => {
+    if (!window.confirm('Tem certeza que deseja excluir este produto do estoque?')) return;
+
+    try {
+      await api.delete(`/produtos/${id}`);
+      setProdutos(produtos.filter(p => p.id !== id));
+    } catch (error) {
+      console.error('Erro ao deletar produto:', error);
+      alert('Erro ao excluir produto. Verifique a conexão com o servidor.');
     }
   };
 
@@ -145,9 +180,13 @@ export default function PainelAdmin() {
             </button>
 
             <button 
-              onClick={() => setAbaAtiva('novo-produto')}
+              onClick={() => {
+                setProdutoEmEdicaoId(null);
+                setNovoProduto({ titulo: '', descricao: '', preco: '', quantidadeEstoque: 10, imageUrl: '', tamanhosDisponiveis: 'P, M, G, GG', coresDisponiveis: 'Azul, Preto, Branco', badge: 'NOVIDADE', categoria: { id: 1 } });
+                setAbaAtiva('novo-produto');
+              }}
               className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider transition cursor-pointer ${abaAtiva === 'novo-produto' ? 'bg-rose-600 text-white' : 'text-neutral-400 hover:bg-neutral-800 hover:text-white'}`}>
-              <PlusCircle className="w-4 h-4" /> Novo Produto
+              <PlusCircle className="w-4 h-4" /> {produtoEmEdicaoId ? 'Editar Produto' : 'Novo Produto'}
             </button>
 
             <button 
@@ -173,7 +212,7 @@ export default function PainelAdmin() {
           <h2 className="text-xl font-bold uppercase tracking-wider text-white">
             {abaAtiva === 'vendas' && 'Gerenciamento de Vendas e Pagamentos'}
             {abaAtiva === 'estoque' && 'Controle de Estoque e Produtos'}
-            {abaAtiva === 'novo-produto' && 'Cadastro de Novo Produto'}
+            {abaAtiva === 'novo-produto' && (produtoEmEdicaoId ? 'Editar Produto' : 'Cadastro de Novo Produto')}
             {abaAtiva === 'clientes' && 'Base de Clientes Cadastrados'}
           </h2>
           <span className="text-xs text-neutral-400 bg-neutral-900 px-3 py-1.5 rounded border border-neutral-800">
@@ -233,26 +272,59 @@ export default function PainelAdmin() {
               </div>
             )}
 
-            {/* ABA 2: ESTOQUE */}
+            {/* ABA 2: ESTOQUE (COM BOTÕES DE EDITAR E DELETAR) */}
             {abaAtiva === 'estoque' && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {produtos.map((prod) => (
-                  <div key={prod.id} className="bg-neutral-900/60 p-4 rounded-xl border border-neutral-800 flex gap-4 items-center">
-                    <img src={prod.urlImg || prod.imageUrl || prod.image} alt="" className="w-16 h-16 object-cover rounded border border-neutral-800" />
-                    <div>
-                      <h3 className="text-sm font-bold text-white">{prod.titulo || prod.name}</h3>
-                      <p className="text-xs text-rose-400 font-semibold mt-0.5">R$ {parseFloat(prod.preco || prod.price || 0).toFixed(2)}</p>
-                      <p className="text-[11px] text-neutral-400 mt-1">Estoque disp.: <span className="text-white font-bold">{prod.estoque || prod.quantidadeEstoque || 10}</span></p>
+                {produtos.length === 0 ? (
+                  <p className="text-neutral-500 text-xs">Nenhum produto cadastrado no estoque.</p>
+                ) : (
+                  produtos.map((prod) => (
+                    <div key={prod.id} className="bg-neutral-900/60 p-4 rounded-xl border border-neutral-800 flex flex-col justify-between gap-4">
+                      <div className="flex gap-4 items-center">
+                        <img src={prod.urlImg || prod.imageUrl || prod.image} alt="" className="w-16 h-16 object-cover rounded border border-neutral-800" />
+                        <div>
+                          <h3 className="text-sm font-bold text-white">{prod.titulo || prod.name}</h3>
+                          <p className="text-xs text-rose-400 font-semibold mt-0.5">R$ {parseFloat(prod.preco || prod.price || 0).toFixed(2)}</p>
+                          <p className="text-[11px] text-neutral-400 mt-1">Estoque: <span className="text-white font-bold">{prod.quantidadeEstoque || prod.estoque || 10}</span></p>
+                        </div>
+                      </div>
+
+                      <div className="flex justify-end gap-2 pt-2 border-t border-neutral-800">
+                        <button 
+                          onClick={() => iniciarEdicao(prod)} 
+                          className="flex items-center gap-1 bg-neutral-800 hover:bg-neutral-700 text-neutral-200 px-3 py-1.5 rounded text-xs transition cursor-pointer">
+                          <Edit3 className="w-3.5 h-3.5 text-blue-400" /> Editar
+                        </button>
+                        <button 
+                          onClick={() => deletarProduto(prod.id)} 
+                          className="flex items-center gap-1 bg-red-950/40 hover:bg-red-900/60 text-red-300 border border-red-900/50 px-3 py-1.5 rounded text-xs transition cursor-pointer">
+                          <Trash2 className="w-3.5 h-3.5" /> Deletar
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             )}
 
-            {/* ABA 3: NOVO PRODUTO */}
+            {/* ABA 3: NOVO PRODUTO / EDIÇÃO */}
             {abaAtiva === 'novo-produto' && (
               <div className="bg-neutral-900/60 rounded-xl border border-neutral-800 p-6 max-w-2xl">
-                <h3 className="text-lg font-serif text-rose-200 mb-4">Cadastrar Novo Produto no Banco</h3>
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-serif text-rose-200">
+                    {produtoEmEdicaoId ? `Editando Produto #${produtoEmEdicaoId}` : 'Cadastrar Novo Produto no Banco'}
+                  </h3>
+                  {produtoEmEdicaoId && (
+                    <button 
+                      onClick={() => {
+                        setProdutoEmEdicaoId(null);
+                        setNovoProduto({ titulo: '', descricao: '', preco: '', quantidadeEstoque: 10, imageUrl: '', tamanhosDisponiveis: 'P, M, G, GG', coresDisponiveis: 'Azul, Preto, Branco', badge: 'NOVIDADE', categoria: { id: 1 } });
+                      }}
+                      className="text-xs text-neutral-400 hover:text-white underline">
+                      Cancelar Edição
+                    </button>
+                  )}
+                </div>
                 
                 {mensagemStatus.texto && (
                   <div className={`p-3 mb-4 rounded text-xs font-medium ${mensagemStatus.tipo === 'sucesso' ? 'bg-green-900/50 text-green-300 border border-green-700' : 'bg-red-900/50 text-red-300 border border-red-700'}`}>
@@ -260,10 +332,10 @@ export default function PainelAdmin() {
                   </div>
                 )}
 
-                <form onSubmit={handleCadastrarProduto} className="space-y-4">
+                <form onSubmit={handleSalvarProduto} className="space-y-4">
                   <div>
                     <label className="block text-xs text-neutral-300 uppercase mb-1">Título do Produto</label>
-                    <input type="text" name="titulo" value={novoProduto.titulo} onChange={handleInputChange} required placeholder="Ex: Cropped Seda Premium" className="w-full bg-neutral-950 border border-neutral-800 rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-rose-500" />
+                    <input type="text" name="titulo" value={novoProduto.titulo} onChange={handleInputChange} required placeholder="Ex: Calça Jeans Slim" className="w-full bg-neutral-950 border border-neutral-800 rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-rose-500" />
                   </div>
 
                   <div>
@@ -277,12 +349,8 @@ export default function PainelAdmin() {
                       <input type="number" step="0.01" name="preco" value={novoProduto.preco} onChange={handleInputChange} required placeholder="79.90" className="w-full bg-neutral-950 border border-neutral-800 rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-rose-500" />
                     </div>
                     <div>
-                      <label className="block text-xs text-neutral-300 uppercase mb-1">Categoria</label>
-                      <select name="categoriaId" value={novoProduto.categoria.id} onChange={handleInputChange} className="w-full bg-neutral-950 border border-neutral-800 rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-rose-500 cursor-pointer">
-                        {categoriasLista.map(cat => (
-                          <option key={cat.id} value={cat.id}>{cat.name}</option>
-                        ))}
-                      </select>
+                      <label className="block text-xs text-neutral-300 uppercase mb-1">Quantidade em Estoque</label>
+                      <input type="number" name="quantidadeEstoque" value={novoProduto.quantidadeEstoque} onChange={handleInputChange} required className="w-full bg-neutral-950 border border-neutral-800 rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-rose-500" />
                     </div>
                   </div>
 
@@ -302,8 +370,17 @@ export default function PainelAdmin() {
                     <input type="text" name="imageUrl" value={novoProduto.imageUrl} onChange={handleInputChange} placeholder="https://exemplo.com/foto.jpg" className="w-full bg-neutral-950 border border-neutral-800 rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-rose-500" />
                   </div>
 
+                  <div>
+                    <label className="block text-xs text-neutral-300 uppercase mb-1">Categoria</label>
+                    <select name="categoriaId" value={novoProduto.categoria?.id || 1} onChange={handleInputChange} className="w-full bg-neutral-950 border border-neutral-800 rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-rose-500 cursor-pointer">
+                      {categoriasLista.map(cat => (
+                        <option key={cat.id} value={cat.id}>{cat.name}</option>
+                      ))}
+                    </select>
+                  </div>
+
                   <button type="submit" disabled={enviando} className="w-full bg-rose-600 hover:bg-rose-700 text-white font-medium py-2.5 rounded text-sm transition cursor-pointer mt-4">
-                    {enviando ? 'Salvando...' : 'Salvar Produto no Banco'}
+                    {enviando ? 'Salvando...' : (produtoEmEdicaoId ? 'Atualizar Produto no Banco' : 'Salvar Produto no Banco')}
                   </button>
                 </form>
               </div>
